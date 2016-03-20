@@ -1,24 +1,5 @@
 {
   "generator": "duoshuo",
   "version": "0.1",
-  "posts": [
-    {
-      "post_id": 1399436409600737282,
-      "thread_id": 6259728441029952257,
-      "message": "test",
-      "site_id": 1272780,
-      "created_at": "2015-04-21T18:42:19+08:00",
-      "updated_at": "1970-01-01T08:00:00+08:00",
-      "likes": 0,
-      "ip": "14.108.114.177",
-      "parents": [],
-      "author_id": 0,
-      "author_email": "liruoxi@yeah.net",
-      "author_name": "\u51db",
-      "author_url": null,
-      "author_key": "0",
-      "thread_key": "2015/04/20/2015-04-20-simpleblog-04/",
-      "post_key": "1399436409600737282"
-    }
-  ]
+  "posts": []
 }

@@ -3,8 +3,7 @@
 """
 Topic: 利用MySQL Connector/Python 操作mysql数据库
 
-网址：http://dev.mysql.com/doc/connector-python/en/index.html
-
+网址：https://pypi.python.org/pypi/mysql-connector-python
 """
 import mysql.connector
 from mysql.connector import errorcode

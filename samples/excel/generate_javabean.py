@@ -282,8 +282,8 @@ if __name__ == '__main__':
     # print(camel_to_underline("CompanyServiceImpl"))
     # print(underline_to_camel("company_service_impl", True))
     beans_dir = r'D:\work\zbeans\tobacco'
-    package_name = r'com.cmback.tobacco.domain;'
-    schema_name = r'D:\work\projects\gitprojects\tobacco\src\main\resources\sql\schema.sql'
+    package_name = r'com.winhong.fastloans.domain;'
+    schema_name = r'D:\work\fastloan\trunk\fastloan-statistics\src\main\resources\sql\schema.sql'
     write_beans(beans_dir, package_name, schema_name)
     # write_beans(sys.argv[1], sys.argv[2], sys.argv[3])
     pass
