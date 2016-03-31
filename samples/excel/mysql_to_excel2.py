@@ -30,6 +30,7 @@ SQL_SELECT_GZ = """
 SELECT COUNT(*) FROM t_policy WHERE created_time BETWEEN %s AND %s;
 """
 
+
 def _connect():
     config = {
         'user': 'root',

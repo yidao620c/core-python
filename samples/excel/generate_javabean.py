@@ -139,6 +139,37 @@ MYSQL_TYPE_MAP = {
     ,'LONGTEXT': ('String',)
     ,'ENUM': ('String',)
     ,'SET': ('String',)
+    ,'bit(1)': ('Boolean',)
+    ,'bit': ('byte[]',)
+    ,'tinyint': ('Integer',)
+    ,'boolean': ('Boolean',)
+    ,'bool': ('Boolean',)
+    ,'smallint': ('Integer',)
+    ,'mediumint': ('Integer',)
+    ,'int': ('Integer',)
+    ,'integer': ('Integer',)
+    ,'bigint': ('Long',)
+    ,'float': ('Float',)
+    ,'double': ('Double',)
+    ,'decimal': ('BigDecimal', 'java.math.BigDecimal')
+    ,'date': ('Date', 'java.util.Date')
+    ,'datetime': ('Date', 'java.util.Date')
+    ,'timestamp': ('Date', 'java.util.Date')
+    ,'time': ('Date', 'java.util.Date')
+    ,'char': ('String ',)
+    ,'varchar': ('String',)
+    ,'binary': ('byte[]',)
+    ,'varbinary': ('byte[]',)
+    ,'tinyblob': ('byte[]',)
+    ,'tinytext': ('String',)
+    ,'blob': ('byte[]',)
+    ,'text': ('String',)
+    ,'mediumblob': ('byte[]',)
+    ,'mediumtext': ('String',)
+    ,'longblob': ('byte[]',)
+    ,'longtext': ('String',)
+    ,'enum': ('String',)
+    ,'set': ('String',)
 }
 
 def camel_to_underline(camel_format):
@@ -165,6 +196,9 @@ def load_schema(filename):
     with open(filename, encoding='utf-8') as sqlfile:
         each_table = []  # 每张表定义
         for line in sqlfile:
+            if not line.strip() or line.strip().startswith("#"):
+                continue
+            line = line.replace("`", "")
             if line.startswith('--'):
                 temp_comment = line.split('--')[1].strip()
             elif 'DROP TABLE' in line:
@@ -281,9 +315,9 @@ def write_beans(beans_dir, package_name, schema_name):
 if __name__ == '__main__':
     # print(camel_to_underline("CompanyServiceImpl"))
     # print(underline_to_camel("company_service_impl", True))
-    beans_dir = r'D:\work\zbeans\tobacco'
-    package_name = r'com.winhong.fastloans.domain;'
-    schema_name = r'D:\work\fastloan\trunk\fastloan-statistics\src\main\resources\sql\schema.sql'
+    beans_dir = r'D:\work\fastloan\trunk\fastloan3-front\src\main\java\com\winhong\fastloan2\domain'
+    package_name = r'com.winhong.fastloan2.domain;'
+    schema_name = r'D:\work\fastloan\trunk\fastloan3-front\src\main\resources\sql\schema.sql'
     write_beans(beans_dir, package_name, schema_name)
     # write_beans(sys.argv[1], sys.argv[2], sys.argv[3])
     pass

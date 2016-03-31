@@ -31,18 +31,18 @@ def fetch_map():
     driver.find_element_by_id('u').send_keys('344063306')
     driver.find_element_by_id('p').send_keys('vs_baobao620817')
     driver.find_element_by_id('login_button').click()
-    driver.switch_to.frame('vcode')
+    # driver.switch_to.frame('vcode')
     # driver.find_element_by_id('capRefreshTips').click()
     # WebDriverWait(driver, 3).until(
     #     EC.presence_of_element_located((By.ID, "CAPTCHA_img"))
     # )
     # print(driver.find_element_by_id('CAPTCHA_img').get_attribute('url'))
     # driver.save_screenshot(r"D:\work\projects\core-python\temp\aa.png")
-    yanzm = input('验证码=')
-    driver.find_element_by_id('capAns').send_keys(yanzm)
-    driver.find_element_by_id('submit').click()
+    # yanzm = input('验证码=')
+    # driver.find_element_by_id('capAns').send_keys(yanzm)
+    # driver.find_element_by_id('submit').click()
     # 返回主窗体
-    driver.switch_to.default_content()
+    # driver.switch_to.default_content()
     WebDriverWait(driver, 3).until(
         EC.presence_of_element_located((By.XPATH, '//a[contains(text(),"后台管理")]'))
     )
@@ -120,49 +120,49 @@ def replace_threadkey():
 
 
 if __name__ == '__main__':
-    allkeys = {
-        "2015/05/01/python-decorator.html",
-        "2016/03/06/hexo.html",
-        "2015/04/23/lvs-keepalived.html",
-        "2015/04/23/pyinstaller.html",
-        "2015/04/22/fastjson-date.html",
-        "2015/04/21/simpleblog-14.html",
-        "2015/04/21/simpleblog-13.html",
-        "2015/04/21/simpleblog-12.html",
-        "2015/04/21/simpleblog-11.html",
-        "2015/04/21/simpleblog-10.html",
-        "2015/04/21/simpleblog-08.html",
-        "2015/04/21/simpleblog-07.html",
-        "2015/04/21/simpleblog-06.html",
-        "2015/04/21/simpleblog-05.html",
-        "2015/04/20/simpleblog-04.html",
-        "2015/04/20/simpleblog-03.html",
-        "2015/04/20/simpleblog-02.html",
-        "2015/04/21/simpleblog-09.html",
-        "2015/04/20/simpleblog-01.html",
-        "2016/03/08/scrapy-1.html",
-        "2015/10/13/httpd-tomcat.html",
-        "2015/10/10/centos-python.html",
-        "guestbook/index.html",
-        "2015/04/16/memcached-install.html",
-        "2015/10/20/nginx.html",
-        "2015/03/18/octopress-blog.html",
-        "2015/03/07/joke.html",
-        "about/index.html"
-    }
-    json_file = r'D:\work\projects\core-python\temp\export01.json'
-    with open(json_file, mode='r', encoding='utf-8') as readf:
-        lines = readf.readlines()
-    pat = re.compile('.+"(.+)",')
-    for i in range(0, len(lines)):
-        if '"thread_key"' in lines[i]:
-            s = pat.search(lines[i])
-            if not s:
-                print('not found:' + lines[i])
-            else:
-                thread_key = pat.search(lines[i]).group(1)
-                if thread_key not in allkeys:
-                    print(thread_key)
+    # allkeys = {
+    #     "2015/05/01/python-decorator.html",
+    #     "2016/03/06/hexo.html",
+    #     "2015/04/23/lvs-keepalived.html",
+    #     "2015/04/23/pyinstaller.html",
+    #     "2015/04/22/fastjson-date.html",
+    #     "2015/04/21/simpleblog-14.html",
+    #     "2015/04/21/simpleblog-13.html",
+    #     "2015/04/21/simpleblog-12.html",
+    #     "2015/04/21/simpleblog-11.html",
+    #     "2015/04/21/simpleblog-10.html",
+    #     "2015/04/21/simpleblog-08.html",
+    #     "2015/04/21/simpleblog-07.html",
+    #     "2015/04/21/simpleblog-06.html",
+    #     "2015/04/21/simpleblog-05.html",
+    #     "2015/04/20/simpleblog-04.html",
+    #     "2015/04/20/simpleblog-03.html",
+    #     "2015/04/20/simpleblog-02.html",
+    #     "2015/04/21/simpleblog-09.html",
+    #     "2015/04/20/simpleblog-01.html",
+    #     "2016/03/08/scrapy-1.html",
+    #     "2015/10/13/httpd-tomcat.html",
+    #     "2015/10/10/centos-python.html",
+    #     "guestbook/index.html",
+    #     "2015/04/16/memcached-install.html",
+    #     "2015/10/20/nginx.html",
+    #     "2015/03/18/octopress-blog.html",
+    #     "2015/03/07/joke.html",
+    #     "about/index.html"
+    # }
+    # json_file = r'D:\work\projects\core-python\temp\export01.json'
+    # with open(json_file, mode='r', encoding='utf-8') as readf:
+    #     lines = readf.readlines()
+    # pat = re.compile('.+"(.+)",')
+    # for i in range(0, len(lines)):
+    #     if '"thread_key"' in lines[i]:
+    #         s = pat.search(lines[i])
+    #         if not s:
+    #             print('not found:' + lines[i])
+    #         else:
+    #             thread_key = pat.search(lines[i]).group(1)
+    #             if thread_key not in allkeys:
+    #                 print(thread_key)
     # print('开始写文件')
     # with open(json_file, mode='w', encoding='utf-8') as writef:
     #     writef.writelines(lines)
@@ -170,3 +170,4 @@ if __name__ == '__main__':
     # s = '"thread_key": "2015/04/20/2015-04-20-simpleblog-04/",'
     # ss = re.sub('\d{4}-\d{2}-\d{2}-(.+)/', '\g<1>.html', s)
     # print(ss)
+    fetch_map()
