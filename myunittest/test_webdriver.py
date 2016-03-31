@@ -29,7 +29,7 @@ def fetch_map():
     driver.switch_to.frame('ptlogin_iframe')
     driver.find_element_by_id('switcher_plogin').click()
     driver.find_element_by_id('u').send_keys('344063306')
-    driver.find_element_by_id('p').send_keys('vs_baobao620817')
+    driver.find_element_by_id('p').send_keys('******')
     driver.find_element_by_id('login_button').click()
     # driver.switch_to.frame('vcode')
     # driver.find_element_by_id('capRefreshTips').click()
