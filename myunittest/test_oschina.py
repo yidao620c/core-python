@@ -22,7 +22,7 @@ def auto_comment():
     driver.maximize_window()
     driver.find_element_by_xpath('//div[@id="OSC_Userbar"]/a[text()="登录"]').click()
     driver.find_element_by_id('f_email').send_keys("yidao620@gmail.com")
-    driver.find_element_by_id('f_pwd').send_keys("baobao620")
+    driver.find_element_by_id('f_pwd').send_keys("******")
     driver.find_element_by_xpath('//input[@value="现在登录 »"]').click()
     time.sleep(1)
     driver.find_element_by_xpath('//li[@id="hotSwitcher"]/a').click()
