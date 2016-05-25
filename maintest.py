@@ -9,7 +9,13 @@ import re
 
 
 if __name__ == '__main__':
-    aa = {"1", 2}
-    print("aaa='{}','{}'".format(*aa))
-    print("a'a'a'".replace("'", ";"))
+    print("CLICKS{:d}".format(111))
+    print('CLICKS111'[6:])
+
+    print(list([2]))
+    try:
+        import multiprocessing  # noqa
+    except ImportError:
+        print('dd')
+        pass
 

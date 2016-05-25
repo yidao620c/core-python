@@ -52,5 +52,24 @@ def main():
     if aa <= aa:
         pass
 
+
+def _odd_it():
+    n = 1
+    while True:
+        n += 2
+        yield n
+
+def _nd(n):
+    print('_nd')
+    def kk(x):
+        print('kkk')
+        return x % n > 0
+    return kk
+
 if __name__ == '__main__':
-    main()
+    it = _odd_it()
+    it = filter(_nd(3), it)
+    print(next(it))
+    aa = list([1,2,3])
+
+    # print(type(it))
