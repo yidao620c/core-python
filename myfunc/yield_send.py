@@ -60,12 +60,28 @@ def produce(consumer):
 
 
 if __name__ == '__main__':
-    consumer = consume()
-    aa = consumer.send(None)
-    print(aa)
-    bb = consumer.send(get_data())
-    print(bb)
-    producer = produce(consumer)
+    # consumer = consume()
+    # aa = consumer.send(None)
+    # print(aa)
+    # bb = consumer.send(get_data())
+    # print(bb)
+    # producer = produce(consumer)
     # for _ in range(2):
     #     print('Producing...')
     #     next(producer)
+
+    def myfunc():
+        print 'start myfunc...',
+        m = yield 111
+        print 'get m = %s' % m
+        n = yield 222
+        print 'get n = %s' % n
+        yield
+
+
+    c = myfunc()       # 调用生成器函数获取到生成器c
+    result = c.next()  # 相当于c.send(None)
+    print '(1) result=%s' % result
+    result = c.send('Hello')
+    print '(2) result=%s' % result
+    c.send('Goodbye')

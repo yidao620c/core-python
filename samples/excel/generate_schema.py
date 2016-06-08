@@ -168,11 +168,11 @@ def write_dest(xlsx_name, schema_name):
         ws['H4'] = '默认值'
         ws['I4'].style = header_style
         ws['I4'] = '备注'
-        ws.column_dimensions['E'].width = 20
+        ws.column_dimensions['E'].width = 30
         ws.column_dimensions['F'].width = 20
         ws.column_dimensions['G'].width = 12
-        ws.column_dimensions['H'].width = 16
-        ws.column_dimensions['I'].width = 45
+        ws.column_dimensions['H'].width = 25
+        ws.column_dimensions['I'].width = 40
         for idx, each_column in enumerate(table[2:]):
             ws['E{}'.format(idx + 5)].style = common_style
             ws['E{}'.format(idx + 5)] = each_column[0]
@@ -220,7 +220,7 @@ if __name__ == '__main__':
     # write_only()
     import sys
     dest_file = r'D:\work\MySQL数据库设计.xlsx'
-    schema_file = r'D:\work\projects\gitprojects\tobacco\src\main\resources\sql\schema.sql'
+    schema_file = r'D:\work\fastloan\trunk\simple-service-webapp\src\main\resources\schema.sql'
     write_dest(dest_file, schema_file)
     # write_dest(sys.argv[1], sys.argv[2])
     pass
