@@ -40,3 +40,18 @@ if __name__ == '__main__':
     # channel.close()
     ssh.close()
 
+
+def execute_remote():
+    hostname = '192.168.217.162'
+    port = 22
+    pkey_file = '/root/.ssh/id_rsa'
+
+    if __name__ == "__main__":
+       key = paramiko.RSAKey.from_private_key_file(pkey_file)
+       s = paramiko.SSHClient()
+       s.load_system_host_keys()
+       s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+       s.connect(hostname, port, pkey=key)
+       stdin, stdout, stderr = s.exec_command('/root/kk.sh > /root/kk.log')
+       print(stdout.read())
+       s.close()
