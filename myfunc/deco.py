@@ -42,4 +42,40 @@ def hello(name):
     print('Hello', name)
 
 
-hello('world')
+def tags(tag_name):
+    def tags_decorator(func):
+        @wraps(func)
+        def func_wrapper(*args, **kargs):
+            return "<{0}>{1}</{0}>".format(tag_name, func(*args, **kargs))
+        return func_wrapper
+    return tags_decorator
+
+
+def pptags(func):
+    @wraps(func)
+    def func_wrapper(*args, **kargs):
+        return "<{0}>{1}</{0}>".format('pp', func(*args, **kargs))
+    return func_wrapper
+
+
+@tags('p')
+def get_text(name):
+    """returns some text with p"""
+    return "Hello " + name
+
+@pptags
+def get_text_pp(name):
+    """returns some text with pp"""
+    return "Hello " + name
+
+
+if __name__ == '__main__':
+    print(get_text.__name__)  # get_text
+    print(get_text.__doc__)  # returns some text
+    print(get_text.__module__)  # __main__
+    print(get_text('韩梅梅'))
+
+    print(get_text_pp.__name__)  # get_text
+    print(get_text_pp.__doc__)  # returns some text
+    print(get_text_pp.__module__)  # __main__
+    print(get_text_pp('李雷'))

@@ -4,6 +4,7 @@
 Topic: 素数生成
 Desc : 埃氏筛法算法
 """
+from datetime import datetime
 
 
 def _odd_iter():

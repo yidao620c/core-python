@@ -10,6 +10,7 @@ __author__ = 'Xiong Neng'
 
 # 随机序列迭代器
 class RandomSeq(object):
+
     def __init__(self, seq):
         self.seq = seq
 
@@ -22,6 +23,7 @@ class RandomSeq(object):
 
 # 任意项的迭代器
 class AnyIter(object):
+
     def __init__(self, data, safe=False):
         self.safe = safe
         self.iter = iter(data)

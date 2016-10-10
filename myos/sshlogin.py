@@ -52,6 +52,6 @@ def execute_remote():
        s.load_system_host_keys()
        s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
        s.connect(hostname, port, pkey=key)
-       stdin, stdout, stderr = s.exec_command('/root/kk.sh > /root/kk.log')
+       stdin, stdout, stderr = s.exec_command('/root/kk.sh > /root/kk.log', get_pty = True)
        print(stdout.read())
        s.close()

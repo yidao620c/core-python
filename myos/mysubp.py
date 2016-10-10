@@ -28,5 +28,5 @@ def demo():
     out = p2.stdout.read()
 
 if __name__ == '__main__':
-    demo()
+    a,b,c=1
     pass

@@ -39,6 +39,10 @@ def doprob():
         except (KeyboardInterrupt, EOFError, ValueError) as e:
             print('invalid input... try again.', str(e))
             break
+        else:
+            print('success....')
+        finally:
+            print('finally')
 
 
 def main():
@@ -51,9 +55,9 @@ def main():
         except (KeyboardInterrupt, EOFError) as e:
             break
 
+
 def print_name():
     print(__name__)
 
 if __name__ == '__main__':
     main()
-

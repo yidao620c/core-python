@@ -4,3 +4,6 @@
     Topic: sample
     Desc : 
 """
+
+xunicode = __import__('re')
+
