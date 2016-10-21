@@ -33,20 +33,4 @@ def str2int(s):
 
 
 if __name__ == '__main__':
-    # print(str2int('34243'))
-    # print(list(filter(lambda n: n % 2 == 1, [1, 2, 4, 5, 6, 9, 10, 15])))
-    # print(sorted([36, 5, -12, 9, -21], key=abs))
-    # print(sorted(['bob', 'about', 'Zoo', 'Credit'], key=str.lower))
-    # print(sorted(['bob', 'about', 'Zoo', 'Credit'], key=str.lower, reverse=True))
-    # a = xunicode.sub(r'(foo)(bar)', r'\g<1>123\g<2>', 'foobar')
-    # state = State['INITIALIZE_CLUSTER_COMPLETE']
-    # print(int(100 * state / State["INITIALIZE_ALL_COMPLETE"].value))
     pass
-
-def aa(a, b=2):
-    print(aa.__dict__)
-    pass
-
-aa(1,1)
-aa.__dict__['1'] = '2'
-aa(1,1)

@@ -14,13 +14,66 @@ import logging
 import logging.handlers as handlers
 import logging.config as config
 
-__author__ = 'Xiong Neng'
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
-                    datefmt='%Y-%m-%d %H:%M:%S',
-                    handlers=[logging.FileHandler('message.log', 'a', 'utf-8')])
-# 模块基本用_，类级别用__
-_log = logging.getLogger('app.' + __name__)
+# 时间 | 日志级别 | 文件名 | 行号 | 进程ID | 消息体
+fmt = "%(asctime)-15s [%(levelname)s] %(filename)s %(lineno)d %(process)d ===> %(message)s"
+datefmt = "%Y-%m-%d %H:%M:%S"
+formatter = logging.Formatter(fmt, datefmt)
+
+
+class Logger(object):
+    """ provides a memory-inexpensive logger.  a gotcha about python's builtin
+    logger is that logger objects are never garbage collected.  if you create a
+    thousand loggers with unique names, they'll sit there in memory until your
+    script is done.  with sh, it's easy to create loggers with unique names if
+    we want our loggers to include our command arguments.  for example, these
+    are all unique loggers:
+
+            ls -l
+            ls -l /tmp
+            ls /tmp
+
+    so instead of creating unique loggers, and without sacrificing logging
+    output, we use this class, which maintains as part of its state, the logging
+    "context", which will be the very unique name.  this allows us to get a
+    logger with a very general name, eg: "command", and have a unique name
+    appended to it via the context, eg: "ls -l /tmp" """
+    def __init__(self, name, context=None, logfile=None, level=logging.DEBUG):
+        self.name = name
+        if context:
+            context = context.replace("%", "%%")
+        self.context = context
+        self.log = logging.getLogger(name)
+        self.log.setLevel(level)
+        # self.log.propagate = False  # 关闭传播属性
+        _handler = logging.handlers.TimedRotatingFileHandler(logfile, when='D', interval=7)
+        _handler.setFormatter(formatter)
+        self.log.addHandler(_handler)
+
+    def _format_msg(self, msg, *args):
+        if self.context:
+            msg = "%s: %s" % (self.context, msg)
+        return msg % args
+
+    def get_child(self, name, context):
+        new_name = self.name + "." + name
+        new_context = self.context + "." + context
+        l = Logger(new_name, new_context)
+        return l
+
+    def debug(self, msg, *args):
+        self.log.debug(self._format_msg(msg, *args))
+
+    def info(self, msg, *args):
+        self.log.info(self._format_msg(msg, *args))
+
+    def warn(self, msg, *args):
+        self.log.warn(self._format_msg(msg, *args))
+
+    def error(self, msg, *args):
+        self.log.error(self._format_msg(msg, *args))
+
+    def exception(self, msg, *args):
+        self.log.exception(self._format_msg(msg, *args))
 
 
 class FilterFunc(logging.Filter):
@@ -33,6 +86,12 @@ class FilterFunc(logging.Filter):
 
 
 def my_log():
+    logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S',
+                    handlers=[logging.FileHandler('message.log', 'a', 'utf-8')])
+    # 模块基本用_，类级别用__
+    _log = logging.getLogger('app.' + __name__)
     host = '10.0.0.175'
     port = 8080
     # 不要用 'xxxx' % (aa, bb)去手动格式化消息
@@ -49,4 +108,6 @@ def my_log():
 
 
 if __name__ == '__main__':
-    my_log()
+    log = Logger(__name__, 'ls -l', logfile='D:/temp.log')
+    log.info('11111111111111111111')
+    log.debug('2222222222222222222222222222')
