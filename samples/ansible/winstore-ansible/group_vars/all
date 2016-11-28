@@ -1,0 +1,22 @@
+---
+
+main_python_module_name: "winstore"
+general_owner: "sdsadmin"
+general_group: "sdsadmin"
+
+root_path: "/opt/winstore"
+webcontent_path: "/opt/winstore/webapp/winstore-web"
+webapp_path: "/opt/winstore/webapp"
+
+server_name: "winstore"
+
+httpd_port: 8089
+
+python_version: "python{{ansible_python['version']['major'] ~ '.' ~ansible_python['version']['minor']}}"
+
+ceph_conf_file: "/etc/ceph/ceph.conf"
+
+mysql_host: "10.10.111.233"
+mysql_user: "root"
+mysql_password: "winstore"
+mysql_port: 3306

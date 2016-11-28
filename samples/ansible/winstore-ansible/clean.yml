@@ -1,0 +1,101 @@
+---
+
+# 下面是安装顺序，清除采用倒序清理
+# 目前只会清除winstore和ceph软件，底层依赖软件都不会删
+#1. /root/install_rpms/*.rpm
+#2. /root/install_more_rpms/*.rpm
+#3. /root/install_cairo/*.rpm
+#4. pip install setuptools pip virtualenv
+#5. /root/install_ceph_rpms/*.rpm
+#6. /root/install_tgt/*.rpm
+#7. /opt/winstore/apache
+#8. /opt/winstore/...
+#9. /etc/default/winstore, winstore/winhongceph
+#10./etc/init.d/service...
+
+- name: 清空winstore
+  hosts: all
+  remote_user: root
+
+  tasks:
+    - name: stop ceph
+      shell: /etc/init.d/ceph stop
+      ignore_errors: yes
+
+    - name: stop service
+      shell: systemctl stop {{item}}.service 2>/dev/null
+      ignore_errors: yes  # maybe the service is not exist
+      with_items:
+        - carbon
+        - diamond
+        - rbdmap
+        - winstore-agent
+        - winstore-db
+        - winstore-master
+        - winstore-operation
+        - winstore-httpd
+
+    - name: chkconfig remove service
+      shell: chkconfig --del {{item}} 2>/dev/null
+      ignore_errors: yes  # maybe the service is not exist
+      with_items:
+        - ceph
+        - carbon
+        - diamond
+        - rbdmap
+        - winstore-agent
+        - winstore-db
+        - winstore-master
+        - winstore-operation
+        - winstore-httpd
+
+    - name:  umount /var/lib/ceph/osd/*
+      shell: umount -f /var/lib/ceph/osd/* 2>/dev/null
+      ignore_errors: yes
+
+    - name: yum remove ceph and mysql-server
+      shell: yum remove -y {{item}}
+      ignore_errors: yes
+      with_items:
+        - ceph-deploy
+        - ceph
+        - ceph-common
+        - mysql-community-server
+        - mysql-community-devel
+
+    - name: load partition
+      shell: cat /opt/winstore/var/log/winstore/mount.conf | awk '{print $7}'
+      ignore_errors: yes
+      register: disks
+
+    - name: delete partition
+      shell: sgdisk --zap-all --clear --mbrtogpt {{item}}
+      ignore_errors: yes
+      with_items: disks.stdout_lines
+      #with_lines: /usr/bin/phost.sh --param {{ hostname }}
+
+    - name: 删除文件夹
+      file: path="{{item}}" state=absent
+      ignore_errors: yes
+      with_items:
+        - /var/lib/ceph/
+        - /var/log/ceph/
+        - /var/run/ceph/
+        - /etc/ceph/
+        - /opt/winstore/
+        - /etc/default/winstore
+        - /etc/default/winhongceph
+
+    - name: pip uninstall setuptools virtualenv pip
+      shell: pip uninstall -y virtualenv setuptools pip 2>/dev/null
+      ignore_errors: yes
+
+
+    - name: 创建空文件夹
+      file: path="{{item}}" state=directory
+      with_items:
+        - /var/lib/ceph/
+        - /var/log/ceph/
+        - /etc/ceph/
+        - /var/run/ceph
+

@@ -1,0 +1,27 @@
+- name: configure apache httpd.conf 
+  lineinfile: 
+    dest: /opt/winstore/apache/conf/httpd.conf 
+    regexp: "{{item.regexp}}" 
+    insertafter: "{{item.insertafter}}"
+    line: "{{item.line}}"
+  with_items:
+    - {regexp: "^Listen ", insertafter: "^#Listen ", line: "Listen {{httpd_port}}"}
+    - {regexp: "^User ", insertafter: "^#User ",line: "User sdsadmin"}
+    - {regexp: "^Group ", insertafter: "^#Group ",line: "Group sdsadmin"}
+    - {regexp: "^ServerName ", insertafter: "^#ServerName ",line: "ServerName {{server_name}}"}
+
+- name: Load config files from the config directory conf.d/*.conf
+  lineinfile:
+    dest: /opt/winstore/apache/conf/httpd.conf
+    line: "{{item.line}}"
+  with_items:
+    - {line: "Include conf.d/*.conf"}
+
+- name: make sure path must exists
+  file: path="/opt/winstore/apache/conf.d/" state=directory
+    
+- name: use template to upload configure
+  template: src="{{item.src}}" dest="{{item.dest}}" owner={{general_owner}} group={{general_group}}
+  with_items:
+    - {'src': 'templates/apache/winstore-web.conf.j2', 'dest':'/opt/winstore/apache/conf.d/winstore-web.conf'} 
+

@@ -1,0 +1,9 @@
+---
+
+- name: unarchive install tgt
+  unarchive:
+    src: "resource/install_tgt.tar.gz"
+    dest: /root
+
+- name: install tgt
+  shell: yum localinstall -yC --disablerepo=* `ls /root/install_tgt/*.rpm` 

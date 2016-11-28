@@ -1,0 +1,11 @@
+---
+
+- name: make sure remove /root/winstore
+  file: path=/root/winstore state=absent
+
+- name: upload winstore
+  synchronize: src=update_resource/winstore dest=/root mode=push
+
+- name: update winstore
+  shell: "source /opt/winstore/venv/bin/activate && cd /root/winstore && python setup.py install"
+

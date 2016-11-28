@@ -1,0 +1,9 @@
+---
+
+- name: only for centos7.2 just patch it
+  patch: 
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+  with_items:
+    - {src: "resource/patchs/winhong_winstore_nvme.patch", dest: "/usr/lib/udev/rules.d/60-persistent-storage.rules"} 
+  when: ansible_distribution == 'CentOS' and ansible_distribution_version.startswith('7.2')    

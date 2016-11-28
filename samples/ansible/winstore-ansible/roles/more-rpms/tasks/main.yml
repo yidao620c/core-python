@@ -1,0 +1,19 @@
+---
+
+- name:  install_more_rpms
+  unarchive:
+    src: "resource/install_more_rpms.tar.gz"
+    dest: /root
+    
+- name: install more rpms
+  shell: yum localinstall -yC --disablerepo=* `ls /root/install_more_rpms/*.rpm` 
+  
+
+- name: unarchive install cairo
+  unarchive:
+    src: "resource/install_cairo.tar.gz"
+    dest: /root
+    
+- name: install cairo
+  shell: yum localinstall -yC --disablerepo=* `ls /root/install_cairo/*.rpm` 
+

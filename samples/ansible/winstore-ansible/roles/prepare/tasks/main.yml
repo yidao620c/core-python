@@ -1,0 +1,14 @@
+---
+
+- name: add group sdsadmin
+  group: 
+    name: sdsadmin
+    state: present
+
+- name: add user sdsadmin
+  user: 
+    name: sdsadmin
+    password: sdsadmin
+    group: sdsadmin
+    home: /opt/winstore
+    createhome: yes

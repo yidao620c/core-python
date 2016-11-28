@@ -1,0 +1,18 @@
+---
+
+- name: debug for ansible_distribution
+  debug: msg="{{ ansible_distribution }}"
+
+- name: debug for ansible_distribution_version
+  debug: msg="{{ ansible_distribution_version }}"
+
+- name: debug for python_version
+  debug: msg="{{ python_version }}"
+
+- name: debug for system os and version check
+  debug: msg="yes i am in centos 7.2"
+  when: ansible_distribution == 'CentOS' and ansible_distribution_version.startswith('7.2')  
+
+- name: test if ansible connection locally
+  debug: msg="yes i am in local connection"
+  when: ansible_connection == "local"

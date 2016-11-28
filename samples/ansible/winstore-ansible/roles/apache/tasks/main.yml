@@ -1,0 +1,5 @@
+---
+  
+- name: just unarchive it to install apache
+  unarchive: src=resource/green_apache.tar.gz dest=/opt/winstore owner={{general_owner}} group={{general_group}}
+

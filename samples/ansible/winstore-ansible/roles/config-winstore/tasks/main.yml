@@ -1,0 +1,21 @@
+---
+
+- name: copy the winstore winhongceph to /etc/default
+  copy: src="{{item}}" dest=/etc/default mode=0755
+  with_items:
+    - resource/others/winstore
+    - resource/others/winhongceph
+
+- name: config os env
+  shell: "{{item}}"
+  with_items:
+    - sh /opt/winstore/tools/configure/configure_ostune.sh
+    - sh /opt/winstore/tools/configure/configure_osperm.sh
+    - rm -f /etc/udev/rules.d/70-persistent-net.rules
+
+- name: winstore configure file template it and upload it
+  template: src="{{item.src}}" dest="{{item.dest}}" owner={{general_owner}} group={{general_group}}
+  with_items:
+    - {'src': 'templates/winstore/SDS_SYS_CONFIG.conf.template.j2', 'dest':'/opt/winstore/etc/winstore/SDS_SYS_CONFIG.conf.template'}
+    - {'src': 'templates/winstore/winstore.conf.j2', 'dest':'/opt/winstore/etc/winstore/winstore.conf'}
+    - {'src': 'templates/winstore/winstore.wsgi.j2', 'dest':'/opt/winstore/etc/winstore/winstore.wsgi'}
