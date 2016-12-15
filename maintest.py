@@ -5,22 +5,14 @@ Topic: main测试类
 Desc : 
 """
 import collections
+import traceback
+
+def aa():
+    raise Exception('444')
 
 if __name__ == '__main__':
-    VmdkInfo = collections.namedtuple('VmdkInfo', ['path', 'adapter_type',
-                                               'disk_type',
-                                               'capacity_in_bytes',
-                                               'device'])
-    a = VmdkInfo('d', 'dd', 'dd',
-                        None, None)
-    print(a.path)
-    pass
 
+    a = [1, 2, 3,4 ]
+    print(a[1:-1])
 
-    print(chr(ord('a') + 2))
-    hostid_prefix= 'node'
-    i = 4
-    print("{}{:04d}".format(hostid_prefix, i + 1))
-
-    print('mon.{}'.format(chr(ord('a') + 4)))
 

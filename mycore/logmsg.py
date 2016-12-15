@@ -145,3 +145,11 @@ if __name__ == '__main__':
         log.error('888888888888888888', e)
         log.exception('999999999999')
     pass
+
+
+    print("qqqqqqqqqqqqqqqqqqqqqqqqqqqqqq")
+    print("dafasdfasfasdf\n")
+    print("dafasdfasfasdf\n".strip())
+    print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+    print("ffffffffffffffffffffffffffffff")
+    print(1.00 + 1.22)
