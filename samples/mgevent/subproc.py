@@ -5,7 +5,8 @@ import shlex
 import gevent
 from gevent.subprocess import Popen, PIPE
 from functools import wraps
-
+import os
+import signal
 
 def split_list(lst, symbol):
     item = []
@@ -14,10 +15,10 @@ def split_list(lst, symbol):
             yield item
             item = []
         elif i == len(lst) - 1:
-            item.append(e)
+            item.append(str(e))
             yield item
         else:
-            item.append(e)
+            item.append(str(e))
 
 
 def auto_log(log):
@@ -51,12 +52,17 @@ def auto_log(log):
                         stdout, stderr = proc.communicate()
                     if proc.returncode is None:
                         log.error("cmd={},timeout={}".format(flatten_cmd_list, timeout))
+                        if proc:
+                            # proc.kill()
+                            kill_p = Popen(['sudo', 'kill', '--', str(proc.pid)], close_fds=True)
+                            kill_p.wait()
                         return 2, '', 'timeout error'
                     return proc.returncode, stdout, stderr
                 except Exception as e:
                     if proc:
-                        proc.kill()
-                        proc.wait()
+                        # proc.kill()
+                        kill_p = Popen(['sudo', 'kill', '--', str(proc.pid)], close_fds=True)
+                        kill_p.wait()
                     log.error("cmd unknownerror: {0} error: {1}".format(origin_args, e))
                     return 3, '', 'unknown error'
             else:
@@ -78,12 +84,17 @@ def auto_log(log):
                     with gevent.Timeout(timeout, False):
                         stdout, stderr = p2.communicate()
                     if p2.returncode is None:
+                        if p2:
+                            # p2.kill()
+                            kill_p = Popen(['sudo', 'kill', '--', str(p2.pid)], close_fds=True)
+                            kill_p.wait()
                         log.error("cmd={},timeout={}".format(flatten_cmd_list, timeout))
                         return 2, '', 'timeout error'
                 except Exception as e:
                     if p2:
-                        p2.kill()
-                        p2.wait()
+                        # p2.kill()
+                        kill_p = Popen(['sudo', 'kill', '--', str(p2.pid)], close_fds=True)
+                        kill_p.wait()
                     log.error("cmd unknownerror: {0} error: {1}".format(origin_args, e))
                     return 3, '', 'unknown error'
                 return p2.returncode, stdout, stderr

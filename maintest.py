@@ -12,7 +12,6 @@ def aa():
 
 if __name__ == '__main__':
 
-    a = [1, 2, 3,4 ]
-    print(a[1:-1])
+    print('cmd: {}'.format(["334234", "45345234"]))
 
 
