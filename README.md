@@ -1,2 +1,2 @@
-#core-python
+# core-python
 python基础

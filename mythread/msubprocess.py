@@ -22,10 +22,11 @@ def demo():
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate('.')
     # 创建两个子进程，然后通过管道将它们连接在一起
-    p1 = subprocess.Popen('ls -l', shell=True, stdout=subprocess.PIPE)
-    p2 = subprocess.Popen('wc', shell=True, stdin=p1.stdout,
-                          stdout=subprocess.PIPE)
-    out = p2.stdout.read()
+    p1 = subprocess.Popen('ls -l', stdout=subprocess.PIPE)
+    p2 = subprocess.Popen('wc', stdin=p1.stdout, stdout=subprocess.PIPE)
+    p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
+    stdout, stderr = p2.communicate()
+    return p2.returncode, stdout, stderr
 
 if __name__ == '__main__':
     a,b,c=1
