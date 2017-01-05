@@ -2,8 +2,7 @@
 # -*- encoding: utf-8 -*-
 """
 Topic: 各种迭代示例
-Desc : 
-    
+Desc :
 """
 
 
