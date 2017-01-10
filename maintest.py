@@ -7,11 +7,29 @@ Desc :
 import collections
 import traceback
 
-def aa():
-    raise Exception('444')
+log_dict = {
+    'winstore.common': '/opt/winstore/var/log/winstore/common.log',
+    'winstore.api': '/opt/winstore/var/log/winstore/api.log',
+    'winstore.agent': '/opt/winstore/var/log/winstore/agent.log',
+    'winstore.agent.system': '/opt/winstore/var/log/winstore/system.log',
+    'winstore.db': '/opt/winstore/var/log/winstore/db.log',
+}
+
+
+def _get_key(module_name):
+    """根据模块名获取日志key"""
+    mlist = module_name.split('.')
+    mlen = len(mlist)
+    while mlen > 1:
+        cutkey = '.'.join(mlist[:mlen])
+        if cutkey in log_dict:
+            return cutkey
+        mlen -= 1
+    return "default"
 
 if __name__ == '__main__':
-
-    print('cmd: {}'.format(["334234", "45345234"]))
-
-
+    """test"""
+    print(_get_key('winstore.agent.system'))
+    print(_get_key('winstore.agent'))
+    print(_get_key('winstore'))
+    print(_get_key('winstore.resource.wwwww'))
