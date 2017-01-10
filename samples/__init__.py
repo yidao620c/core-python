@@ -5,3 +5,7 @@ Topic: 实用代码集锦
 Desc : 
 """
 
+
+def cool():
+    print('sample cool,,')
+

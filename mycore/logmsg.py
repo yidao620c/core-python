@@ -51,66 +51,6 @@ def get_log(name, level=logging.DEBUG):
     return _log
 
 
-class Logger(object):
-    """ provides a memory-inexpensive logger.  a gotcha about python's builtin
-    logger is that logger objects are never garbage collected.  if you create a
-    thousand loggers with unique names, they'll sit there in memory until your
-    script is done.  with sh, it's easy to create loggers with unique names if
-    we want our loggers to include our command arguments.  for example, these
-    are all unique loggers:
-
-            ls -l
-            ls -l /tmp
-            ls /tmp
-
-    so instead of creating unique loggers, and without sacrificing logging
-    output, we use this class, which maintains as part of its state, the logging
-    "context", which will be the very unique name.  this allows us to get a
-    logger with a very general name, eg: "command", and have a unique name
-    appended to it via the context, eg: "ls -l /tmp" """
-
-    def __init__(self, name, context=None, logfile=None, level=logging.DEBUG):
-        self.name = name
-        if context:
-            context = context.replace("%", "%%")
-        self.context = context
-        self.log = logging.getLogger(name)
-        self.log.setLevel(level)
-        # self.log.propagate = False  # 关闭传播属性
-        _handler = logging.handlers.TimedRotatingFileHandler(logfile, when='D', interval=7)
-        _handler.setFormatter(_formatter)
-        self.log.addHandler(_handler)
-
-    def _format_msg(self, msg):
-        if self.context:
-            msg = "{}: {}".format(self.context, msg)
-        return msg
-
-    def get_child(self, name, context):
-        new_name = self.name + "." + name
-        new_context = self.context + "." + context
-        l = Logger(new_name, new_context)
-        return l
-
-    def debug(self, msg):
-        self.log.debug(self._format_msg(msg))
-
-    def info(self, msg):
-        self.log.info(self._format_msg(msg))
-
-    def warn(self, msg):
-        self.log.warn(self._format_msg(msg))
-
-    def error(self, msg, ex=None):
-        if ex:
-            self.log.error(self._format_msg(msg), exc_info=1)
-        else:
-            self.log.error(self._format_msg(msg))
-
-    def exception(self, msg):
-        self.log.exception(self._format_msg(msg))
-
-
 class FilterFunc(logging.Filter):
     def __init__(self, name):
         super().__init__()
@@ -142,14 +82,5 @@ def my_log():
     config.fileConfig('applogcfg.ini')
 
 if __name__ == '__main__':
-    print('{}{}'.format(1, 2))
-    log = Logger(__name__, 'ls -l', logfile='D:/temp.log')
-    log.info('11111111111111111{},{}')
-    log.debug('2222222222222222222222222222')
-    log.error('dd')
-    try:
-        raise Exception()
-    except Exception as e:
-        log.error('888888888888888888', e)
-        log.exception('999999999999')
+    """logmsg"""
     pass
