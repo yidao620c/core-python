@@ -9,21 +9,30 @@ import sys, os
 __author__ = 'Xiong Neng'
 
 
-# def test_f(fmt, *args, exc_info, extra):
-# return 2 if True else None
+class User(object):
+    def __init__(self, name):
+        self.name = name
+
 
 def aa():
     for x in range(1, 10):
         for y in range(1, x + 2):
             yield '%d * %d = %d\t' % (y, x, x * y) if y <= x else '\n'
             print('ddd')
-b=1
+
+
+b = 1
+
+
 def bb():
-    a=b+2
+    a = b + 2
     print(a)
+
+
 def cc():
     print(__name__)
     pass
+
 
 if __name__ == '__main__':
     a = 1
@@ -54,4 +63,3 @@ if __name__ == '__main__':
 
     zz = ()
     print(type(zz))
-
