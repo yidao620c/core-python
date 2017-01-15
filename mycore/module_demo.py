@@ -5,12 +5,27 @@
 """
 __author__ = "Xiong Neng"
 
+import sys
+
+def demo():
+    print('\n'.join(sys.path))
+
 if __name__ == '__main__':
     """
     # samples/
-    #     __init__.py   (定义cool()函数)
-    #     main.py       (定义aa()函数和User类)
+    #     __init__.py
+    #         def cool(): pass
+    #     main.py
+    #         def aa(): pass
+    #         class User(object): pass
     """
+    # 打印python解释器路径和PYTHONPATH
+    import sys
+    print(sys.executable)
+    print('----------------------------------------------------')
+
+    print('\n'.join(sys.path))
+    print('----------------------------------------------------')
 
     # aa是一个模块函数
     from samples.main import aa
