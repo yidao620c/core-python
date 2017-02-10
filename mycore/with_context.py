@@ -33,4 +33,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    class A(object):
+        def __init__(self):
+            pass
+    print(type(A))
+    print(callable(A))
