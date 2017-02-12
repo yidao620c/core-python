@@ -26,9 +26,9 @@ def grep(lines, search_text):
         if search_text in line: yield line
 
 
-def my_tail_search():
-    wwwlog = tail(open("www.log"))
-    pylines = grep(wwwlog, "python")
+def my_tail_search(filename, keyword):
+    wwwlog = tail(open(filename))
+    pylines = grep(wwwlog, keyword)
     for line in pylines:
         print(line)
 
@@ -36,6 +36,3 @@ def my_tail_search():
 def main():
     pass
 
-
-if __name__ == '__main__':
-    main()

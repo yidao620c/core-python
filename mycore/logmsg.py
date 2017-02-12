@@ -11,6 +11,7 @@ Filter(logname)，只允许来自logname或其子日志的消息通过app.net是
 import logging
 import logging.handlers as handlers
 import logging.config as config
+from logging import CRITICAL, DEBUG, INFO, ERROR, FATAL
 
 # 时间 | 日志级别 | 文件名 | 行号 | 进程ID | Logger名 | 消息体
 _fmt = "%(asctime)-15s [%(levelname)s] %(filename)s line=%(lineno)d" \
@@ -18,12 +19,8 @@ _fmt = "%(asctime)-15s [%(levelname)s] %(filename)s line=%(lineno)d" \
 _datefmt = "%Y-%m-%d %H:%M:%S"
 _formatter = logging.Formatter(_fmt, _datefmt)
 _log_dict = {
-    'default': '/opt/winstore/var/log/winstore/default.log',
-    'winstore.common': '/opt/winstore/var/log/winstore/common.log',
-    'winstore.api': '/opt/winstore/var/log/winstore/api.log',
-    'winstore.agent': '/opt/winstore/var/log/winstore/agent.log',
-    'winstore.agent.system': '/opt/winstore/var/log/winstore/system.log',
-    'winstore.db': '/opt/winstore/var/log/winstore/db.log',
+    'default': '/var/log/default.log',
+    'test.other': '/var/log/other.log',
 }
 
 

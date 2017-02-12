@@ -49,7 +49,4 @@ def multipart():
 
 
 
-if __name__ == '__main__':
-    print('aaa\nbbb')
-
 

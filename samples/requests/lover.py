@@ -8,6 +8,7 @@ import re
 from io import StringIO
 import json
 import xml.etree.ElementTree as ET
+import random
 
 
 def extract_content(xml):
@@ -17,21 +18,37 @@ def extract_content(xml):
     print(tt)
 
 
-def lover_sentences_01():
+def lover_sentences():
     """获取情话网的情话列表！"""
-    urls = ['http://www.siandian.com/qinghua/510.html',
-            'http://www.siandian.com/qinghua/510_2.html',
-            'http://www.siandian.com/qinghua/1608.html']
-    for url in urls:
-        # 读取返回结果
-        r = requests.get(url)
-        # 改变r.encoding
-        encoding = re.search('content="text/html;\s*charset=(.*?)"', r.text).group(1)
-        r.encoding = encoding
-        finds = re.finditer(r'<p>\s*(((?!</).)+)\s*</p>', r.text)
-        for f in finds:
+    url = 'http://www.siandian.com/qinghua/'
+    # 读取返回结果
+    r = requests.get(url)
+    # 改变r.encoding
+    encoding = re.search('content="text/html;\s*charset=(.*?)"', r.text).group(1)
+    r.encoding = encoding
+
+    finds = re.finditer(r'<a href="(.*?\.html)" class="articleTitle.*?>.*?</a>', r.text)
+    for f in finds:
+        find_cute("http://www.siandian.com{}".format(f.group(1)))
+        break
+
+def find_cute(url):
+    # 读取返回结果
+    r = requests.get(url)
+    # 改变r.encoding
+    encoding = re.search('content="text/html;\s*charset=(.*?)"', r.text).group(1)
+    r.encoding = encoding
+    # print(r.text)
+    finds = re.finditer(r'<p>\s*([^>]*?)\s*\n', r.text)
+    i = random.randint(0, sum(1 for _ in finds))
+    start = 0
+    finds = re.finditer(r'<p>\s*([^>]*?)\s*\n', r.text)
+    for f in finds:
+        if start == i:
             print(f.group(1))
+            break
+        start += 1
 
 
-if __name__ == '__main__':
-    lover_sentences_01()
+def main():
+    lover_sentences()
