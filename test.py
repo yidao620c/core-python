@@ -3,12 +3,11 @@
 """
 Desc: something
 """
+from collections import defaultdict
+import fileinput
 
 if __name__ == '__main__':
     """test"""
-    # _log.info('test')
-    import sys
+    print(r'host\s+.*-{}'.format('pool_name'))
 
-    sys.stderr.write('wrong arguments, exit 1')
-    sys.stderr.write('wrong arguments, exit 1')
 
