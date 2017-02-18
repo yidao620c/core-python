@@ -8,6 +8,16 @@ Topic:
 4. 再次去多说后台，把所有评论的新的thread_id和文章标题拿出来
 5. 然后将comments.json中旧的thread_id换成新的
 6. 去多说后台把那个文章thread_key找出来，因为多说只认这个，然后更新每个post中的thread_key完成评论迁移
+
+
+环境配置
+selenium
+pip install -U selenium
+
+PhantomJS
+这个不同的操作系统有各自对应的版本，官网下载页面 <http://phantomjs.org/download.html>
+去下载你对应操作系统版本的phantomjs.下载完后，解压缩可以看到在文件夹的bin目录下有对应的phantomjs的可执行文件，
+拷贝一份放入一个环境变量可以搜索到的地方，或者直接把phantomjs的bin目录加入环境变量即可~
 """
 import time
 from selenium import webdriver
@@ -129,7 +139,7 @@ def replace_threadkey():
 
 def click_page():
     driver = webdriver.Firefox()
-    driver.get('http://www.baidu.com/')
+    driver.get('http://yidao620c.github.io/archives/')
     driver.maximize_window()
     len1 = len(driver.find_elements_by_xpath(
                 '//div[@class="post-archive"]/ul[@class="listing"]/li/a'))
