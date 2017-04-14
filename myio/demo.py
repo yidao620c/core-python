@@ -113,7 +113,21 @@ class Student(object):
         self.score = score
 
 if __name__ == '__main__':
-    stringio_rw()
-    bytesio_rw()
-    _pickle()
-    _json()
+    # stringio_rw()
+    # bytesio_rw()
+    # _pickle()
+    # _json()
+    import json
+    d = dict(name='Bob', age=20, score=88)
+    s1 = json.dumps([d, d, d])
+    s2 = json.dumps([d, d])
+    import codecs
+    with codecs.open('D:/journaldb.txt', 'w', encoding='utf-8') as f:
+        json.dump([d, d, d], f)
+        json.dump([d, d], f)
+
+    t = [[u'192.168.212.200', 'sdb1', '0'], [u'192.168.212.201', 'sdb1', '1'], [u'192.168.212.202', 'sdb1', '2']]
+    for ipaddr, device_name, osd in t:
+        print(ipaddr, device_name, osd)
+
+    print('1Can not found any device' in 'ERROR: Can not found any device, please check.')

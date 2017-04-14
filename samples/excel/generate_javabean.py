@@ -315,9 +315,9 @@ def write_beans(beans_dir, package_name, schema_name):
 if __name__ == '__main__':
     # print(camel_to_underline("CompanyServiceImpl"))
     # print(underline_to_camel("company_service_impl", True))
-    beans_dir = r'D:\work\fastloan\trunk\fastloan3-front\src\main\java\com\winhong\fastloan2\domain'
-    package_name = r'com.winhong.fastloan2.domain;'
-    schema_name = r'D:\work\fastloan\trunk\fastloan3-front\src\main\resources\sql\schema.sql'
+    beans_dir = r'D:\work\zzz'
+    package_name = r'com.cmback.tobacco.domain;'
+    schema_name = r'D:\work\freedom\tobacco\src\main\resources\sql\schema.sql'
     write_beans(beans_dir, package_name, schema_name)
     # write_beans(sys.argv[1], sys.argv[2], sys.argv[3])
     pass
