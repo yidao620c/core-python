@@ -51,8 +51,8 @@ def main():
         #     if not output:
         #         break
         #     print(output)
-    ssh_cmd = 'ssh -o PasswordAuthentication=no StrictHostKeyChecking=no'
-    p2 = Popen(shlex.split('{} {} exit'.format(ssh_cmd, server_ip)), stdout=PIPE, stderr=PIPE)
+    ssh_cmd = 'ssh {} -o PasswordAuthentication=no StrictHostKeyChecking=no exit'.format(server_ip)
+    p2 = Popen(shlex.split(ssh_cmd), stdout=DEVNULL, stderr=DEVNULL)
     p2.wait()
     if p2.returncode != 0:
         ssh_copy_id = 'ssh-copy-id -o StrictHostKeyChecking=no root@{}'.format(server_ip)
