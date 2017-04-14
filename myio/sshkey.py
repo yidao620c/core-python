@@ -51,7 +51,7 @@ def main():
         #     if not output:
         #         break
         #     print(output)
-    ssh_cmd = 'ssh {} -o PasswordAuthentication=no StrictHostKeyChecking=no exit'.format(server_ip)
+    ssh_cmd = 'ssh {} -o PasswordAuthentication=no -o StrictHostKeyChecking=no exit'.format(server_ip)
     p2 = Popen(shlex.split(ssh_cmd), stdout=DEVNULL, stderr=DEVNULL)
     p2.wait()
     if p2.returncode != 0:
