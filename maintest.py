@@ -29,7 +29,7 @@ def _get_key(module_name):
 
 if __name__ == '__main__':
     """test"""
-    print(_get_key('winstore.agent.system'))
-    print(_get_key('winstore.agent'))
-    print(_get_key('winstore'))
-    print(_get_key('winstore.resource.wwwww'))
+    from datetime import datetime
+    print(datetime.now())
+
+    print('\'' + '222' + '\'')

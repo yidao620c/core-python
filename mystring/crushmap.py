@@ -26,8 +26,35 @@ def max_rule_id(crush_file):
         max_id = max(int(m.group(1)), max_id)
     return max_id
 
+def find_osd_weight(crush_file, hdd_osds, ssd_osds):
+    """
+    :param crush_file: 
+    :param hdd_osds
+        hhd硬盘的osd，参数形式为[('1', 'node0001'), ('3', 'node0002')]
+    :param ssd_osds
+        ssd硬盘的osd，参数形式为[('0', 'node0002'), ('2', 'node0002')]
+    :return: 
+    """
+    result_dict = dict()
+    osd_list = []
+    if hdd_osds:
+        osd_list.extend([osd_num for osd_num, _ in hdd_osds ])
+    if ssd_osds:
+        osd_list.extend([osd_num for osd_num, _ in ssd_osds ])
+    with open(crush_file) as f:
+        content_list = f.readlines()
+    for osd_num in osd_list:
+        id_pattern = re.compile(r'^\s*item osd.{} weight (\d+\.\d+)'.format(osd_num), re.MULTILINE)
+        for line in content_list:
+            m = id_pattern.match(line)
+            if m:
+                result_dict[osd_num] = m.group(1)
+                break
+    return result_dict
+
 
 def create_pool_byosd(pool_name, storage_policy, storage_type=0, hhd_osds=None, ssd_osds=None):
+    from multiprocessing.dummy import Pool as ThreadPool
     """
     :param pool_name
         存储池名称
@@ -232,6 +259,11 @@ def remove_crushmap(crushfile_txt, pool_name):
 
 if __name__ == '__main__':
     """test"""
-    remove_crushmap('d:/text.txt', 'xiongneng')
+    # remove_crushmap('d:/text.txt', 'xiongneng')
+    print(find_osd_weight(r'D:\work\projects\gitprojects\core-python\configs\crushmap.txt',
+                          [('1', 'node0001'), ('3', 'node0002')], [('0', 'node0002'), ('2', 'node0002')]))
+
+    a = dict()
+    print(a.get('222', 'ddddddddddd'))
 
 

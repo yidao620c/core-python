@@ -4,6 +4,7 @@
 Topic: sample
 Desc : 
 """
+from functools import reduce
 
 def str2int(s):
     def char2num(s):
@@ -13,6 +14,9 @@ def str2int(s):
 
 if __name__ == '__main__':
     import sys, os
+    if (len(sys.argv) < 2):
+        exit(0)
+
     def convert(orig):
         with open(orig) as f:
             lines = f.readlines()
