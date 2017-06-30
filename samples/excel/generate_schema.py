@@ -7,13 +7,11 @@ Desc :
 from openpyxl import Workbook
 from openpyxl import load_workbook
 from openpyxl.compat import range
-from openpyxl.cell import get_column_letter
-from openpyxl.drawing import Image
-from openpyxl.writer.dump_worksheet import WriteOnlyCell
-from openpyxl.comments import Comment
-from openpyxl.styles import Style, PatternFill, Border, Side, Alignment, Protection, Font, Color
+from openpyxl.utils import get_column_letter
+from openpyxl.styles import NamedStyle, PatternFill, Border, Side, Alignment, Protection, Font, Color
 from openpyxl.styles import colors, borders, fills
 import re
+from copy import copy
 
 
 def load_xlsx():
@@ -24,7 +22,6 @@ def load_xlsx():
     print(wb.get_sheet_names())
     print(ws['D5'], ws.cell(row=5, column=4))
     cell_range = ws['A1':'C2']
-
     wb2 = load_workbook('D:/work/MySQL数据库表.xlsx')
     print(wb2.get_sheet_names())
 
@@ -59,16 +56,16 @@ def write_only():
     ws = wb.create_sheet()
     ws.title = "首页列表"
     c = ws['A1']
-    c.style = Style(font=Font(name='Courrier', size=36)
-                    , fill=PatternFill(fill_type=None, start_color='FFFFFFFF',
-                                       end_color='FF000000')
-                    , protection=Protection(locked='inherit', hidden='inherit')
-                    , alignment=Alignment(horizontal='general', vertical='bottom',
-                                          shrink_to_fit=True)
-                    , border=Border(left=Side(border_style=None, color='FF000000')))
+    c.style = NamedStyle(font=Font(name='Courrier', size=36)
+                         , fill=PatternFill(fill_type=None, start_color='FFFFFFFF',
+                                            end_color='FF000000')
+                         , protection=Protection(locked='inherit', hidden='inherit')
+                         , alignment=Alignment(horizontal='general', vertical='bottom',
+                                               shrink_to_fit=True)
+                         , border=Border(left=Side(border_style=None, color='FF000000')))
     c.value = '姓名'
     # cell = WriteOnlyCell(ws, value="hello world")
-    # cell.style = Style(font=Font(name='Courrier', size=36))
+    # cell.style = NamedStyle(font=Font(name='Courrier', size=36))
     # cell.comment = Comment(text="A comment", author="Author's Name")
 
     # ws.header_footer.center_header.text = 'My Excel Page'
@@ -124,39 +121,47 @@ def write_dest(xlsx_name, schema_name):
                           shrink_to_fit=True, indent=0)
     fill = PatternFill(fill_type=None, start_color='FFFFFFFF')
     # 基本的样式
-    basic_style = Style(font=Font(name='Microsoft YaHei')
-                        , border=border, alignment=alignment
-                        , fill=fill)
-    title_style = basic_style.copy(
-        font=Font(name='Microsoft YaHei', b=True, size=20, color='00215757'),
-        alignment=Alignment(horizontal='center', vertical='bottom',
-                            text_rotation=0, wrap_text=False,
-                            shrink_to_fit=True, indent=0),
-        fill=PatternFill(fill_type=fills.FILL_SOLID, start_color='00B2CBED'))
-    header_style = basic_style.copy(
-        font=Font(name='Microsoft YaHei', b=True, size=15, color='00215757'),
-        fill=PatternFill(fill_type=fills.FILL_SOLID, start_color='00BAA87F'))
-    common_style = basic_style.copy()
-    link_style = basic_style.copy(font=Font(
-        name='Microsoft YaHei', color=colors.BLUE, underline='single'))
+    basic_style = NamedStyle(name="basic_style", font=Font(name='Microsoft YaHei')
+                             , border=border, alignment=alignment
+                             , fill=fill)
+    title_style = copy(basic_style)
+    title_style.name = 'title_style'
+    title_style.font = Font(name='Microsoft YaHei', b=True, size=20, color='00215757')
+    title_style.alignment = Alignment(horizontal='center', vertical='bottom',
+                                      text_rotation=0, wrap_text=False,
+                                      shrink_to_fit=True, indent=0)
+    title_style.fill = PatternFill(fill_type=fills.FILL_SOLID, start_color='00B2CBED')
+    header_style = copy(basic_style)
+    header_style.name='header_style'
+    header_style.font = Font(name='Microsoft YaHei', b=True, size=15, color='00215757')
+    header_style.fill = PatternFill(fill_type=fills.FILL_SOLID, start_color='00BAA87F')
+    common_style = copy(basic_style)
+    common_style.name='common_style'
+    link_style = copy(basic_style)
+    link_style.name = 'link_style'
+    link_style.font = Font(name='Microsoft YaHei', color=colors.BLUE, underline='single')
     table_data = load_schema(schema_name)
     wb = Workbook()
+    wb.add_named_style(basic_style)
+    wb.add_named_style(title_style)
+    wb.add_named_style(header_style)
+    wb.add_named_style(common_style)
+
+    bstyle = NamedStyle(name='bstyle', border=Border(
+            bottom=Side(border_style=borders.BORDER_THIN, color='FF000000')))
+    wb.add_named_style(bstyle)
+
     wb.active.title = "首页列表"
 
     for table in table_data:
         ws = wb.create_sheet(title=table[0])
         ws.merge_cells('E3:I3')  # 合并单元格
         ws['E3'].style = title_style
-        ws['F2'].style = Style(border=Border(
-            bottom=Side(border_style=borders.BORDER_THIN, color='FF000000')))
-        ws['G2'].style = Style(border=Border(
-            bottom=Side(border_style=borders.BORDER_THIN, color='FF000000')))
-        ws['H2'].style = Style(border=Border(
-            bottom=Side(border_style=borders.BORDER_THIN, color='FF000000')))
-        ws['I2'].style = Style(border=Border(
-            bottom=Side(border_style=borders.BORDER_THIN, color='FF000000')))
-        ws['J3'].style = Style(border=Border(
-            left=Side(border_style=borders.BORDER_THIN, color='FF000000')))
+        ws['F2'].style = bstyle
+        ws['G2'].style = bstyle
+        ws['H2'].style = bstyle
+        ws['I2'].style = bstyle
+        ws['J3'].style = bstyle
         ws['E3'] = table[0]
         ws['E4'].style = header_style
         ws['E4'] = '列名'
@@ -187,12 +192,9 @@ def write_dest(xlsx_name, schema_name):
     ws = wb['首页列表']
     ws.merge_cells('D3:F3')
     ws['D3'].style = title_style
-    ws['E2'].style = Style(border=Border(
-        bottom=Side(border_style=borders.BORDER_THIN, color='FF000000')))
-    ws['F2'].style = Style(border=Border(
-        bottom=Side(border_style=borders.BORDER_THIN, color='FF000000')))
-    ws['G3'].style = Style(border=Border(
-        left=Side(border_style=borders.BORDER_THIN, color='FF000000')))
+    ws['E2'].style = bstyle
+    ws['F2'].style = bstyle
+    ws['G3'].style = bstyle
     ws['D3'] = 'MySQL数据库系统表'
     ws['D4'].style = header_style
     ws['D4'] = '编号'
@@ -201,8 +203,8 @@ def write_dest(xlsx_name, schema_name):
     ws['F4'].style = header_style
     ws['F4'] = '详情链接'
     ws.column_dimensions['D'].width = 15
-    ws.column_dimensions['E'].width = 25
-    ws.column_dimensions['F'].width = 35
+    ws.column_dimensions['E'].width = 35
+    ws.column_dimensions['F'].width = 45
     for inx, val in enumerate(table_data):
         ws['D{}'.format(inx + 5)].style = common_style
         ws['D{}'.format(inx + 5)] = inx + 1
@@ -219,8 +221,9 @@ if __name__ == '__main__':
     # write_xlsx()
     # write_only()
     import sys
-    dest_file = r'D:\work\MySQL数据库设计.xlsx'
-    schema_file = r'D:\work\fastloan\trunk\simple-service-webapp\src\main\resources\schema.sql'
+
+    dest_file = r'E:\work\MySQL数据库设计.xlsx'
+    schema_file = r'E:\projects\rest-api-web\src\main\resources\schema1.sql'
     write_dest(dest_file, schema_file)
     # write_dest(sys.argv[1], sys.argv[2])
     pass
