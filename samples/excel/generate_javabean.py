@@ -394,10 +394,10 @@ if __name__ == '__main__':
         schema_name = sys.argv[5]
         write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_name)
     else:
-        src_base_dir = r'E:\projects\tobacco-back1\src\main\java'
+        src_base_dir = r'E:\projects\epay-rest-api\src\main\java'
         domain_package = 'com.enzhico.epay.domain'
         mapper_package = 'com.enzhico.epay.mapper.base'
-        xml_dir = r'E:\projects\tobacco-back1\src\main\resources\mapper'
-        schema_name = r'E:\projects\tobacco1\src\main\resources\sql\schema.sql'
+        xml_dir = r'E:\projects\epay-rest-api\src\main\resources\mappers'
+        schema_name = r'E:\projects\epay-rest-api\src\main\resources\schema.sql'
     write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_name)
 

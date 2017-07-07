@@ -83,6 +83,9 @@ def load_schema(filename):
         each_table = []  # 每张表定义
         temp_comment = ''
         for line in sqlfile:
+            if not line.strip() or line.strip().startswith("#"):
+                continue
+            line = line.replace("`", "")
             if line.startswith('--'):
                 temp_comment = line.split('--')[1].strip()
             elif 'DROP TABLE' in line:
@@ -223,7 +226,7 @@ if __name__ == '__main__':
     import sys
 
     dest_file = r'E:\work\MySQL数据库设计.xlsx'
-    schema_file = r'E:\projects\rest-api-web\src\main\resources\schema1.sql'
+    schema_file = r'E:\projects\epay-rest-api\src\main\resources\schema.sql'
     write_dest(dest_file, schema_file)
     # write_dest(sys.argv[1], sys.argv[2])
     pass
