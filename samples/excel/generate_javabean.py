@@ -3,7 +3,7 @@
 """
 Topic: 通过一个schema.sql来生成标准表结构的javabean
 
-使用方法：python generate_javabean.py src_base_dir domain_package mapper_package xml_dir schema_name
+使用方法：python generate_javabean.py src_base_dir domain_package mapper_package xml_dir schema_name author
 
 参数：
 1. src_base_dir     源码基础路径：E:\projects\tobacco-back1\src\main\java
@@ -11,6 +11,7 @@ Topic: 通过一个schema.sql来生成标准表结构的javabean
 3. mapper_package   mapper类的包名：com.enzhico.epay.mapper
 4. xml_dir          mapper xml绝对路径：E:\projects\tobacco-back1\src\main\resources\mapper
 5. schema_name      schema sql文件的绝对路径：E:\projects\tobacco-back1\src\main\resources\schema.sql
+6. author           源代码的作者
 """
 import sys
 import os
@@ -20,6 +21,7 @@ BASE_DOMAIN = """
 _package_location_
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -31,9 +33,9 @@ import java.util.Date;
 /**
  * domain公共父类
  *
- * @author XiongNeng
+ * @author _author_
  * @version 1.0
- * @since 2015/3/22
+ * @since _since_date_
  */
 public class BaseDomain implements Serializable {
     /**
@@ -48,12 +50,14 @@ public class BaseDomain implements Serializable {
      * 创建时间
      */
     @Column(name = "created_time")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createdTime;
 
     /**
      * 更新时间
      */
     @Column(name = "updated_time")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updatedTime;
 
     public String toString() {
@@ -244,7 +248,7 @@ def load_schema(filename):
     return result
 
 
-def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_name):
+def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_name, author):
 
     beans_dir = os.path.join(src_base_dir, domain_package.replace('.', os.sep))
     mapper_dir = os.path.join(src_base_dir, mapper_package.replace('.', os.sep))
@@ -261,10 +265,13 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
     mapper_package_with_semicolon = mapper_package + ";"
 
     # 今日格式化字符串
-    today_str = ' * @since {}'.format(datetime.datetime.now().strftime('%Y/%m/%d'))
+    today_today = datetime.datetime.now().strftime('%Y/%m/%d')
+    today_str = ' * @since {}'.format(today_today)
     # 先写BaseDomain.java
     with open(os.path.join(beans_dir, 'BaseDomain.java'), mode='w', encoding='utf-8') as jf:
-        jf.write(BASE_DOMAIN.replace('_package_location_', 'package ' + domain_package_with_semicolon))
+        jf.write(BASE_DOMAIN.replace('_package_location_', 'package ' + domain_package_with_semicolon).
+                 replace('_since_date_', today_today).
+                 replace('_author_', author))
 
     table_data = load_schema(schema_name)
     # 然后开始对每个表生成一个Domain类
@@ -275,13 +282,15 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
         lines = []
         lines.append('package ' + domain_package_with_semicolon)
         lines.append('\n')
-        lines.append('import javax.persistence.Table;')
+        lines.append('import com.fasterxml.jackson.annotation.JsonPropertyOrder;')
+        lines.append('\n')
         lines.append('import javax.persistence.Column;')
+        lines.append('import javax.persistence.Table;')
         lines.append('\n')
         lines.append('/**')
         lines.append(' * ' + table_name_comment)
         lines.append(' *')
-        lines.append(' * @author XiongNeng')
+        lines.append(' * @author {}'.format(author))
         lines.append(' * @version 1.0')
         lines.append(today_str)
         lines.append(' */')
@@ -291,6 +300,7 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
         lines_fields = []
         lines_methods = []
         other_import = set()
+        field_name_list = []
 
         for each_column in table[2:]:
             # 列名
@@ -298,6 +308,7 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
             if column_name in BASE_FIELS:
                 continue
             field_name = underline_to_camel(column_name, is_field=True)
+            field_name_list.append(field_name)
             field_name_method = underline_to_camel(column_name)
             # 类型
             ctype = each_column[1]
@@ -312,9 +323,13 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
             lines_fields.append('     * {}'.format(column_comment))
             lines_fields.append('     */')
             lines_fields.append('    @Column(name = "{}")'.format(column_name))
+            if java_type == 'Date':
+                lines_fields.append('    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")')
             lines_fields.append('    private {} {};'.format(java_type, field_name))
             if import_str:
                 other_import.add(import_str)
+                if 'java.util.Date' in import_str:
+                    other_import.add('import com.fasterxml.jackson.annotation.JsonFormat;')
 
             # get方法生成
             lines_methods.append('    /**')
@@ -346,6 +361,17 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
         lines.extend(lines_methods)
         lines.append('}')
 
+        # 开始添加字段显示顺序
+        core_columns = ', '.join(['"{}"'.format(f) for f in field_name_list])
+        order_str = '@JsonPropertyOrder({{"id", {}, "createdTime", "updatedTime"}})'.format(core_columns)
+        find_index = 0
+        for li in lines:
+            if li.startswith('public class'):
+                break
+            find_index += 1
+        lines.insert(find_index, order_str)
+
+        # 加上换行符
         lines = [line + "\n" if line != '\n' else line for line in lines]
         # 开始写java源文件
         java_file = class_name + '.java'
@@ -366,7 +392,7 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
         lines.append('/**')
         lines.append(' * ' + table_name_comment + " Mapper")
         lines.append(' *')
-        lines.append(' * @author XiongNeng')
+        lines.append(' * @author {}'.format(author))
         lines.append(' * @version 1.0')
         lines.append(today_str)
         lines.append(' */')
@@ -392,12 +418,14 @@ if __name__ == '__main__':
         mapper_package = sys.argv[3]
         xml_dir = sys.argv[4]
         schema_name = sys.argv[5]
-        write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_name)
+        author = sys.argv[6]
+        write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_name, author)
     else:
         src_base_dir = r'E:\projects\epay-rest-api\src\main\java'
         domain_package = 'com.enzhico.epay.domain'
         mapper_package = 'com.enzhico.epay.mapper.base'
         xml_dir = r'E:\projects\epay-rest-api\src\main\resources\mappers'
         schema_name = r'E:\projects\epay-rest-api\src\main\resources\schema.sql'
-    write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_name)
+        author = '熊能'
+    write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_name, author)
 
