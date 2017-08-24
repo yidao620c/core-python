@@ -163,7 +163,8 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
     mapper_package_with_semicolon = mapper_package + ";"
 
     # 今日格式化字符串
-    today_today = datetime.datetime.now().strftime('%Y/%m/%d')
+    # today_today = datetime.datetime.now().strftime('%Y/%m/%d')
+    today_today = TODAY_STR
     today_str = ' * @since {}'.format(today_today)
 
     table_data = load_schema(schema_name)
@@ -299,6 +300,9 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
     print('successful...')
     pass
 
+# 定义源码日期
+TODAY_STR = '2017/08/23'
+
 if __name__ == '__main__':
     if len(sys.argv) > 5:
         src_base_dir = sys.argv[1]
@@ -309,11 +313,11 @@ if __name__ == '__main__':
         author = sys.argv[6]
         write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_name, author)
     else:
-        src_base_dir = r'E:\projects\guns\src\main\java'
-        domain_package = 'com.stylefeng.guns.common.persistence.model'
-        mapper_package = 'com.stylefeng.guns.common.persistence.dao'
-        xml_dir = r'E:\projects\guns\src\main\java\com\stylefeng\guns\common\persistence\dao\mapping'
-        schema_name = r'E:\projects\epay-rest-api\src\main\resources\schema.sql'
+        src_base_dir = r'E:\projects\clouds-epay-web\src\main\java'
+        domain_package = 'com.enzhico.common.persistence.model'
+        mapper_package = 'com.enzhico.common.persistence.dao'
+        xml_dir = r'E:\projects\clouds-epay-web\src\main\java\com\enzhico\common\persistence\dao\mapping'
+        schema_name = r'E:\projects\clouds-epay-web\sql\schema.sql'
         author = '熊能'
     write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_name, author)
 

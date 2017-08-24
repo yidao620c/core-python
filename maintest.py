@@ -29,7 +29,4 @@ def _get_key(module_name):
 
 if __name__ == '__main__':
     """test"""
-    from datetime import datetime
-    print(datetime.now())
-
-    print('\'' + '222' + '\'')
+    print("dd='%.4f'".format(0.5,))
