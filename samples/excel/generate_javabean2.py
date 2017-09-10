@@ -120,7 +120,9 @@ def load_schema(filename):
     with open(filename, encoding='utf-8') as sqlfile:
         each_table = []  # 每张表定义
         for line in sqlfile:
-            if not line.strip() or line.strip().startswith("#"):
+            linestrip = line.strip()
+            if not linestrip or linestrip.startswith("#") \
+                    or linestrip.startswith("INDEX") or linestrip.startswith("ALTER TABLE"):
                 continue
             line = line.replace("`", "")
             if line.startswith('--'):
