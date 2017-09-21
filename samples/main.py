@@ -63,3 +63,7 @@ if __name__ == '__main__':
 
     zz = ()
     print(type(zz))
+
+    print(float.__new__(float))
+    print(help(float))
+    print(help(float.__new__))

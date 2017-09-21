@@ -249,7 +249,7 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
             lines_methods.append('    }')
             lines_methods.append('\n')
 
-        for each_other in other_import:
+        for each_other in sorted(other_import):
             lines.insert(2, each_other)
         lines.extend(lines_fields)
         lines.append('\n')
