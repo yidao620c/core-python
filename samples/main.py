@@ -4,7 +4,7 @@
     Topic: sample
     Desc : 
 """
-import sys, os
+import sys, os, re
 
 __author__ = 'Xiong Neng'
 
@@ -35,35 +35,40 @@ def cc():
 
 
 if __name__ == '__main__':
-    a = 1
-    bb()
+    pass
+    # a = 1
+    # bb()
+    #
+    # disklist = [{'wwid': '111', 'name': '11112'},
+    #             {'wwid': '222', 'name': '2222'},
+    #             {'wwid': '333', 'name': '3332'},
+    #             {'wwid': '444', 'name': '4442'}]
+    #
+    # all_wwiddisk_list = [{'wwid': '111', 'name': '11112'},
+    #                      {'wwid': '555', 'name': '5552'},
+    #                      {'wwid': '666', 'name': '6662'}]
+    #
+    # kk = (db_disk['wwid'] for db_disk in disklist)
+    # print(kk)
+    #
+    # print([dd for dd in all_wwiddisk_list if dd['wwid'] not in (db_disk['wwid'] for db_disk in disklist)])
+    #
+    # if '1' in ('1', '2'):
+    #     print('OK')
+    #
+    # zz = (1, 2)
+    # print(type(zz))
+    #
+    # zz = {}
+    # print(type(zz))
+    #
+    # zz = ()
+    # print(type(zz))
+    #
+    # print(float.__new__(float))
+    # print(help(float))
+    # print(help(float.__new__))
+    test_str = '15:[xd_earn_factor<64.0953] yes=31,no=32,missing=31,gain=25.8518,cover=606'
+    print(re.split(r'[:\[<\]=,]', test_str))
 
-    disklist = [{'wwid': '111', 'name': '11112'},
-                {'wwid': '222', 'name': '2222'},
-                {'wwid': '333', 'name': '3332'},
-                {'wwid': '444', 'name': '4442'}]
-
-    all_wwiddisk_list = [{'wwid': '111', 'name': '11112'},
-                         {'wwid': '555', 'name': '5552'},
-                         {'wwid': '666', 'name': '6662'}]
-
-    kk = (db_disk['wwid'] for db_disk in disklist)
-    print(kk)
-
-    print([dd for dd in all_wwiddisk_list if dd['wwid'] not in (db_disk['wwid'] for db_disk in disklist)])
-
-    if '1' in ('1', '2'):
-        print('OK')
-
-    zz = (1, 2)
-    print(type(zz))
-
-    zz = {}
-    print(type(zz))
-
-    zz = ()
-    print(type(zz))
-
-    print(float.__new__(float))
-    print(help(float))
-    print(help(float.__new__))
+    print({ tt[0] : '%d'.formart(tt[1]) for tt in  [rr.split('=') for rr in test_str.split()[1].split(',')]})

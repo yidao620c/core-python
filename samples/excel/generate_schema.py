@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 """
 Topic: 通过一个schema.sql来生成excel表格的数据库设计文档
-Desc : 
+Desc :
 """
 from openpyxl import Workbook
 from openpyxl import load_workbook
@@ -12,67 +12,6 @@ from openpyxl.styles import NamedStyle, PatternFill, Border, Side, Alignment, Pr
 from openpyxl.styles import colors, borders, fills
 import re
 from copy import copy
-
-
-def load_xlsx():
-    wb = Workbook()
-    ws = wb.active
-    ws.title = "首页列表"
-    ws = wb['首页列表']
-    print(wb.get_sheet_names())
-    print(ws['D5'], ws.cell(row=5, column=4))
-    cell_range = ws['A1':'C2']
-    wb2 = load_workbook('D:/work/MySQL数据库表.xlsx')
-    print(wb2.get_sheet_names())
-
-
-def write_xlsx():
-    wb = Workbook()
-    dest_filename = 'empty_book.xlsx'
-    ws = wb.active
-    ws.title = "首页列表"
-    for col_idx in range(1, 10):
-        col = get_column_letter(col_idx)
-        for row in range(1, 20):
-            ws['%s%s' % (col, row)].value = '%s%s' % (col, row)
-    ws.merge_cells('A1:B1')  # 合并单元格
-    ws.unmerge_cells('A1:B1')
-    ws = wb.create_sheet()
-    ws.title = 'Pi'
-    ws['F5'] = 3.14
-    # img = Image('logo.png')
-    # img.drawing.top = 100
-    # img.drawing.left = 150
-
-    wb.save(filename=dest_filename)
-
-    wb = load_workbook(filename='empty_book.xlsx')
-    sheet_ranges = wb['首页列表']
-    print(sheet_ranges['D18'].value)
-
-
-def write_only():
-    wb = Workbook()
-    ws = wb.create_sheet()
-    ws.title = "首页列表"
-    c = ws['A1']
-    c.style = NamedStyle(font=Font(name='Courrier', size=36)
-                         , fill=PatternFill(fill_type=None, start_color='FFFFFFFF',
-                                            end_color='FF000000')
-                         , protection=Protection(locked='inherit', hidden='inherit')
-                         , alignment=Alignment(horizontal='general', vertical='bottom',
-                                               shrink_to_fit=True)
-                         , border=Border(left=Side(border_style=None, color='FF000000')))
-    c.value = '姓名'
-    # cell = WriteOnlyCell(ws, value="hello world")
-    # cell.style = NamedStyle(font=Font(name='Courrier', size=36))
-    # cell.comment = Comment(text="A comment", author="Author's Name")
-
-    # ws.header_footer.center_header.text = 'My Excel Page'
-    # ws.header_footer.center_header.font_size = 14
-    # ws.header_footer.center_header.font_name = "Tahoma,Bold"
-    # ws.header_footer.center_header.font_color = "CC3366"
-    wb.save(filename='empty_book.xlsx')
 
 
 def load_schema(filename):
@@ -125,8 +64,7 @@ def write_dest(xlsx_name, schema_name):
     fill = PatternFill(fill_type=None, start_color='FFFFFFFF')
     # 基本的样式
     basic_style = NamedStyle(name="basic_style", font=Font(name='Microsoft YaHei')
-                             , border=border, alignment=alignment
-                             , fill=fill)
+                             , border=border, alignment=alignment, fill=fill)
     title_style = copy(basic_style)
     title_style.name = 'title_style'
     title_style.font = Font(name='Microsoft YaHei', b=True, size=20, color='00215757')
@@ -139,7 +77,7 @@ def write_dest(xlsx_name, schema_name):
     header_style.font = Font(name='Microsoft YaHei', b=True, size=15, color='00215757')
     header_style.fill = PatternFill(fill_type=fills.FILL_SOLID, start_color='00BAA87F')
     common_style = copy(basic_style)
-    common_style.name='common_style'
+    common_style.name = 'common_style'
     link_style = copy(basic_style)
     link_style.name = 'link_style'
     link_style.font = Font(name='Microsoft YaHei', color=colors.BLUE, underline='single')
@@ -226,7 +164,7 @@ if __name__ == '__main__':
     import sys
 
     dest_file = r'E:\work\MySQL数据库设计.xlsx'
-    schema_file = r'E:\projects\clouds-epay-web\sql\schema.sql'
+    schema_file = r'E:\projects\clouds-epay-mapper\sql\schema.sql'
     write_dest(dest_file, schema_file)
     # write_dest(sys.argv[1], sys.argv[2])
     pass

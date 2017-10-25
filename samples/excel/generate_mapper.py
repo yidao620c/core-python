@@ -1,128 +1,25 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 """
-Topic: 通过一个schema.sql来生成标准表结构的javabean
+通过一个schema.sql来生成标准表结构的Domain和基础Mapper
+基于mybatis-plus库使用
 
-使用方法：python generate_javabean.py src_base_dir domain_package mapper_package xml_dir schema_name author
+使用方法：python generate_mapper.py src_base_dir domain_package mapper_package schema_name author
 
 参数：
-1. src_base_dir     源码基础路径：E:\projects\tobacco-back1\src\main\java
-2. domain_package   domain类的包名：com.enzhico.epay.domain.base
-3. mapper_package   mapper类的包名：com.enzhico.epay.mapper
-4. xml_dir          mapper xml绝对路径：E:\projects\tobacco-back1\src\main\resources\mapper
-5. schema_name      schema sql文件的绝对路径：E:\projects\tobacco-back1\src\main\resources\schema.sql
-6. author           源代码的作者
+1. src_base_dir     源码基础路径：E:\projects\clouds-epay-mapper\src\main\java
+2. domain_package   domain类的包名：com.enzhico.common.persistence.model
+3. mapper_package   mapper类的包名：com.enzhico.common.persistence.dao
+4. schema_name      schema sql文件的绝对路径：E:\projects\clouds-epay-mapper\sql\schema.sql
+5. author           源代码的作者：熊能
+
 """
 import sys
 import os
 import datetime
 
-BASE_DOMAIN = """
-_package_location_
-
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.io.Serializable;
-import java.util.Date;
-
-/**
- * domain公共父类
- *
- * @author _author_
- * @version 1.0
- * @since _since_date_
- */
-public class BaseDomain implements Serializable {
-    /**
-     * 主键ID
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
-
-    /**
-     * 创建时间
-     */
-    @Column(name = "created_time")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date createdTime;
-
-    /**
-     * 更新时间
-     */
-    @Column(name = "updated_time")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date updatedTime;
-
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
-    /**
-     * 获取 更新时间.
-     *
-     * @return 更新时间.
-     */
-    public Date getUpdatedTime() {
-        return updatedTime;
-    }
-
-    /**
-     * 设置 创建时间.
-     *
-     * @param createdTime 创建时间.
-     */
-    public void setCreatedTime(Date createdTime) {
-        this.createdTime = createdTime;
-    }
-
-    /**
-     * 获取 创建时间.
-     *
-     * @return 创建时间.
-     */
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
-    /**
-     * 设置 更新时间.
-     *
-     * @param updatedTime 更新时间.
-     */
-    public void setUpdatedTime(Date updatedTime) {
-        this.updatedTime = updatedTime;
-    }
-
-    /**
-     * 设置 主键ID.
-     *
-     * @param id 主键ID.
-     */
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    /**
-     * 获取 主键ID.
-     *
-     * @return 主键ID.
-     */
-    public Long getId() {
-        return id;
-    }
-}
-
-"""
-
 # 基类功能列
-BASE_FIELS = {'id', 'updated_time', 'created_time'}
+BASE_FIELS = {}
 
 # MySQL type to java type
 MYSQL_TYPE_MAP = {
@@ -190,14 +87,6 @@ MYSQL_TYPE_MAP = {
     , 'set': ('String',)
 }
 
-MAPPER_XML = """<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="{}.{}Mapper">
-</mapper>
-"""
-
-
 def camel_to_underline(camel_format):
     """
     驼峰命名格式转下划线命名格式
@@ -222,7 +111,9 @@ def load_schema(filename):
     with open(filename, encoding='utf-8') as sqlfile:
         each_table = []  # 每张表定义
         for line in sqlfile:
-            if not line.strip() or line.strip().startswith("#"):
+            linestrip = line.strip()
+            if not linestrip or linestrip.startswith("#") \
+                    or linestrip.startswith("INDEX") or linestrip.startswith("ALTER TABLE"):
                 continue
             line = line.replace("`", "")
             if line.startswith('--'):
@@ -248,30 +139,23 @@ def load_schema(filename):
     return result
 
 
-def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_name, author):
+def write_beans(src_base_dir, domain_package, mapper_package, schema_name, author):
 
     beans_dir = os.path.join(src_base_dir, domain_package.replace('.', os.sep))
     mapper_dir = os.path.join(src_base_dir, mapper_package.replace('.', os.sep))
-    xml_dir = os.path.join(src_base_dir, xml_dir)
 
     if not os.path.exists(beans_dir):
         os.makedirs(beans_dir)
     if not os.path.exists(mapper_dir):
         os.makedirs(mapper_dir)
-    if not os.path.exists(xml_dir):
-        os.makedirs(xml_dir)
 
     domain_package_with_semicolon = domain_package + ";"
     mapper_package_with_semicolon = mapper_package + ";"
 
     # 今日格式化字符串
-    today_today = datetime.datetime.now().strftime('%Y/%m/%d')
+    # today_today = datetime.datetime.now().strftime('%Y/%m/%d')
+    today_today = TODAY_STR
     today_str = ' * @since {}'.format(today_today)
-    # 先写BaseDomain.java
-    with open(os.path.join(beans_dir, 'BaseDomain.java'), mode='w', encoding='utf-8') as jf:
-        jf.write(BASE_DOMAIN.replace('_package_location_', 'package ' + domain_package_with_semicolon).
-                 replace('_since_date_', today_today).
-                 replace('_author_', author))
 
     table_data = load_schema(schema_name)
     # 然后开始对每个表生成一个Domain类
@@ -282,10 +166,11 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
         lines = []
         lines.append('package ' + domain_package_with_semicolon)
         lines.append('\n')
-        lines.append('import com.fasterxml.jackson.annotation.JsonPropertyOrder;')
-        lines.append('\n')
-        lines.append('import javax.persistence.Column;')
-        lines.append('import javax.persistence.Table;')
+        lines.append('import com.baomidou.mybatisplus.annotations.TableName;')
+        lines.append('import com.baomidou.mybatisplus.enums.IdType;')
+        lines.append('import com.baomidou.mybatisplus.annotations.TableId;')
+        lines.append('import com.baomidou.mybatisplus.activerecord.Model;')
+        lines.append('import java.io.Serializable;')
         lines.append('\n')
         lines.append('/**')
         lines.append(' * ' + table_name_comment)
@@ -294,9 +179,11 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
         lines.append(' * @version 1.0')
         lines.append(today_str)
         lines.append(' */')
-        lines.append('@Table(name = "{}")'.format(table_name_real))
-        lines.append('public class {} extends BaseDomain {{'.format(class_name))
-
+        lines.append('@TableName(value = "{}")'.format(table_name_real))
+        lines.append('public class {} extends Model<{}> {{'.format(class_name, class_name))
+        lines.append('\n')
+        lines.append('private static final long serialVersionUID = 1L;')
+        lines.append('\n')
         lines_fields = []
         lines_methods = []
         other_import = set()
@@ -322,14 +209,11 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
             lines_fields.append('    /**')
             lines_fields.append('     * {}'.format(column_comment))
             lines_fields.append('     */')
-            lines_fields.append('    @Column(name = "{}")'.format(column_name))
-            if java_type == 'Date':
-                lines_fields.append('    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")')
+            if column_name == 'id':
+                lines_fields.append('    @TableId(value="id", type= IdType.AUTO)')
             lines_fields.append('    private {} {};'.format(java_type, field_name))
             if import_str:
                 other_import.add(import_str)
-                if 'java.util.Date' in import_str:
-                    other_import.add('import com.fasterxml.jackson.annotation.JsonFormat;')
 
             # get方法生成
             lines_methods.append('    /**')
@@ -353,23 +237,18 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
             lines_methods.append('    }')
             lines_methods.append('\n')
 
-        for each_other in other_import:
+        for each_other in sorted(other_import):
             lines.insert(2, each_other)
-
         lines.extend(lines_fields)
         lines.append('\n')
         lines.extend(lines_methods)
+        # 最后加上pkVal()实现
+        lines.append('    @Override')
+        lines.append('    protected Serializable pkVal() {')
+        lines.append('        return this.id;')
+        lines.append('    }')
+        lines.append('\n')
         lines.append('}')
-
-        # 开始添加字段显示顺序
-        core_columns = ', '.join(['"{}"'.format(f) for f in field_name_list])
-        order_str = '@JsonPropertyOrder({{"id", {}, "createdTime", "updatedTime"}})'.format(core_columns)
-        find_index = 0
-        for li in lines:
-            if li.startswith('public class'):
-                break
-            find_index += 1
-        lines.insert(find_index, order_str)
 
         # 加上换行符
         lines = [line + "\n" if line != '\n' else line for line in lines]
@@ -378,7 +257,7 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
         with open(os.path.join(beans_dir, java_file), mode='w', encoding='utf-8') as jf:
             jf.writelines(lines)
 
-    # 然后开始对每个表生成一个Mapper类和一个xml配置文件
+    # 然后开始对每个表生成一个Mapper类
     for table in table_data:
         table_name_comment = table[0]
         table_name_real = table[1]
@@ -387,7 +266,7 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
         lines.append('package ' + mapper_package_with_semicolon)
         lines.append('\n')
         lines.append('import {}.{};'.format(domain_package, class_name))
-        lines.append('import tk.mybatis.mapper.common.Mapper;')
+        lines.append('import com.baomidou.mybatisplus.mapper.BaseMapper;')
         lines.append('\n')
         lines.append('/**')
         lines.append(' * ' + table_name_comment + " Mapper")
@@ -396,7 +275,7 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
         lines.append(' * @version 1.0')
         lines.append(today_str)
         lines.append(' */')
-        lines.append('public interface {0}Mapper extends Mapper<{0}> {{'.format(class_name))
+        lines.append('public interface {0}Mapper extends BaseMapper<{0}> {{'.format(class_name))
         lines.append('\n')
         lines.append('}')
 
@@ -404,28 +283,24 @@ def write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_na
         # 开始写mapper源文件
         with open(os.path.join(mapper_dir, '{}Mapper.java'.format(class_name)), mode='w', encoding='utf-8') as jf:
             jf.writelines(lines)
-
-        # 开始写mapper的xml配置文件
-        with open(os.path.join(xml_dir, '{}Mapper.xml'.format(class_name)), mode='w', encoding='utf-8') as jf:
-            jf.write(MAPPER_XML.format(mapper_package, class_name))
     print('successful...')
     pass
 
+# 定义源码日期
+TODAY_STR = '2017/08/23'
+
 if __name__ == '__main__':
-    if len(sys.argv) > 5:
+    if len(sys.argv) > 4:
         src_base_dir = sys.argv[1]
         domain_package = sys.argv[2]
         mapper_package = sys.argv[3]
-        xml_dir = sys.argv[4]
-        schema_name = sys.argv[5]
-        author = sys.argv[6]
-        write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_name, author)
+        schema_name = sys.argv[4]
+        author = sys.argv[5]
     else:
-        src_base_dir = r'E:\projects\epay-rest-api\src\main\java'
-        domain_package = 'com.enzhico.epay.domain'
-        mapper_package = 'com.enzhico.epay.mapper.base'
-        xml_dir = r'E:\projects\epay-rest-api\src\main\resources\mappers'
-        schema_name = r'E:\projects\epay-rest-api\src\main\resources\schema.sql'
+        src_base_dir = r'E:\projects\clouds-epay-mapper\src\main\java'
+        domain_package = 'com.enzhico.common.persistence.model'
+        mapper_package = 'com.enzhico.common.persistence.dao'
+        schema_name = r'E:\projects\clouds-epay-mapper\sql\schema.sql'
         author = '熊能'
-    write_beans(src_base_dir, domain_package, mapper_package, xml_dir, schema_name, author)
+    write_beans(src_base_dir, domain_package, mapper_package, schema_name, author)
 
