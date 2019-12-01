@@ -1,7 +1,0 @@
----
-
-- name: synchronize the winstore 
-  synchronize: src=resource/winstore dest=/opt mode=push
-
-- name: change shell scripts mode
-  file: path=/opt/winstore/tools mode="u+x,g+x,o+x" recurse=yes

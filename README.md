@@ -1,2 +1,3 @@
 # core-python
-python基础
+
+python语言基础

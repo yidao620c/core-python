@@ -1,5 +1,0 @@
-[localhost]
-localhost ansible_connection=local
-
-#10.10.111.110 ansible_ssh_user=root ansible_ssh_pass=root123
-#10.10.111.133 ansible_ssh_user=root ansible_ssh_pass=root123
