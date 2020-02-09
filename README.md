@@ -10,4 +10,5 @@ python语言基础，主要代码来自于《流畅的Python》一书，这是�
 * 《Python核心编程（第3版）》
 * 《流畅的Python》
 * 《Python Cookbook（第3版）》
+* 《Python高级编程（第2版）》
 
