@@ -38,6 +38,10 @@ class Vector2d:
     def __bool__(self):
         return bool(abs(self))
 
+    def __format__(self, fmt_spec=''):
+        components = (format(c, fmt_spec) for c in self)
+        return '({}, {})'.format(*components)
+
     @classmethod
     def frombytes(cls, octets):
         typecode = chr(octets[0])
