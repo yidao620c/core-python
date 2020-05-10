@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 """
-Topic: sample
-Desc : 
+Topic: 并发编程
 """
 

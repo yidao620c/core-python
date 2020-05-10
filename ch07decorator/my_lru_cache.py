@@ -6,7 +6,7 @@ Topic: functools.lru_cache做备忘
 """
 import functools
 
-from ch07_decorator.my_time_decorator import clock
+from ch07decorator.my_time_decorator import clock
 
 
 @functools.lru_cache()
