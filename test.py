@@ -1,15 +1,9 @@
 # -*- encoding: utf-8 -*-
-"""Example docstrings.
-Some of description...
+"""
+Example docstrings.
 """
 
-def foo():
-    try:
-        return "try"
-    finally:
-        for i in range(0):
-            break
 
-
-print(foo())
-
+params = {"line": "line222", "prefix": "prefix"}
+a = "ddd"
+print(f"{params['line']}")
