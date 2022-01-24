@@ -1,9 +1,14 @@
-# -*- encoding: utf-8 -*-
-"""
-Example docstrings.
-"""
+class Father:
+    def __init__(self, choose_dir: str):
+        print(choose_dir)
+        self.choose_dir = choose_dir
 
 
-params = {"line": "line222", "prefix": "prefix"}
-a = "ddd"
-print(f"{params['line']}")
+class Son:
+    def execute(self):
+        f = Father("ddd")
+
+if __name__ == '__main__':
+    son = Son()
+    son.execute()
+    print(222)

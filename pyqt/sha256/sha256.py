@@ -23,8 +23,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def execute(self):
         if self.lineEdit.text():
             # 实例化线程对象
-            choose_dir = self.lineEdit.text()
-            work = WorkThread(choose_dir=choose_dir)
+            work = WorkThread(choose_dir=self.lineEdit.text())
             # 线程自定义信号连接的槽函数
             work.started.connect(self.start)
             work.trigger.connect(self.display)
@@ -37,7 +36,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def start(self):
         # 线程开始的处理
         self.plainTextEdit.appendPlainText(f">>>>>>>>>>>>all start<<<<<<<<<<<<<<")
-        print("11111111111111111")
 
     def display(self, params):
         # 由于自定义信号时自动传递一个参数对象
@@ -46,21 +44,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def end(self):
         # 线程结束的处理
         self.plainTextEdit.appendPlainText(f">>>>>>>>>>>>all finished<<<<<<<<<<<<<<")
-        print("2222222222222")
 
 
 class WorkThread(QThread):
     # 自定义信号对象。参数dict就代表这个信号可以传一个dict对象
     trigger = pyqtSignal(dict)
 
-    def __int__(self, parent=None, _choose_dir=None):
+    def __init__(self, choose_dir: str = None):
         # 初始化函数
-        super(WorkThread, self).__init__()
-        self.choose_dir = _choose_dir
+        super().__init__()
+        self.choose_dir = choose_dir
 
     def run(self):
-        # 重写线程执行的run函数
-        # 触发自定义信号
+        # 重写线程执行的run函数，触发自定义信号
         for i in range(20):
             self.trigger.emit({"prefix": "start", "line": f"{str(i)} - {self.choose_dir}"})
             time.sleep(1)
