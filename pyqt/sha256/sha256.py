@@ -87,5 +87,6 @@ def main():
     cgitb.enable(format='text')
     app = QApplication(sys.argv)
     main_window = MainWindow()
+    main_window.setFixedSize(main_window.width(), main_window.height())
     main_window.show()
     sys.exit(app.exec_())

@@ -14,7 +14,13 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_SHA256(object):
     def setupUi(self, SHA256):
         SHA256.setObjectName("SHA256")
-        SHA256.resize(716, 600)
+        SHA256.resize(664, 600)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(SHA256.sizePolicy().hasHeightForWidth())
+        SHA256.setSizePolicy(sizePolicy)
+        SHA256.setMinimumSize(QtCore.QSize(0, 0))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/pic/logo.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         SHA256.setWindowIcon(icon)
@@ -76,7 +82,7 @@ class Ui_SHA256(object):
         self.plainTextEdit.raise_()
         SHA256.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(SHA256)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 716, 29))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 664, 29))
         self.menubar.setObjectName("menubar")
         SHA256.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(SHA256)
