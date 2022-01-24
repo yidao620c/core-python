@@ -11,12 +11,15 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(716, 600)
-        MainWindow.setStyleSheet("font: 75 10pt \"微软雅黑\";")
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
+class Ui_SHA256(object):
+    def setupUi(self, SHA256):
+        SHA256.setObjectName("SHA256")
+        SHA256.resize(716, 600)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/pic/logo.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        SHA256.setWindowIcon(icon)
+        SHA256.setStyleSheet("font: 75 10pt \"微软雅黑\";")
+        self.centralwidget = QtWidgets.QWidget(SHA256)
         self.centralwidget.setObjectName("centralwidget")
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(20, 144, 81, 31))
@@ -71,23 +74,24 @@ class Ui_MainWindow(object):
         self.pushButton.raise_()
         self.frame.raise_()
         self.plainTextEdit.raise_()
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
+        SHA256.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(SHA256)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 716, 29))
         self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        SHA256.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(SHA256)
         self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+        SHA256.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(SHA256)
+        QtCore.QMetaObject.connectSlotsByName(SHA256)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, SHA256):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "选择目录："))
-        self.pushButton.setText(_translate("MainWindow", "..."))
-        self.pushButton_2.setText(_translate("MainWindow", "开始"))
-        self.pushButton_3.setText(_translate("MainWindow", "取消"))
-        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600; color:#00aaff;\">自动生成json文件的散列值</span></p></body></html>"))
+        SHA256.setWindowTitle(_translate("SHA256", "SHA256小工具"))
+        self.label.setText(_translate("SHA256", "选择目录："))
+        self.pushButton.setText(_translate("SHA256", "..."))
+        self.pushButton_2.setText(_translate("SHA256", "开始"))
+        self.pushButton_3.setText(_translate("SHA256", "取消"))
+        self.label_2.setText(_translate("SHA256", "<html><head/><body><p><span style=\" font-weight:600; color:#00aaff;\">自动生成json文件的散列值</span></p></body></html>"))
+from . import images_rc

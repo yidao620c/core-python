@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QInputDialog
 from .sha256_ui import *
 
 
-class MainWindow(QMainWindow, Ui_MainWindow):
+class MainWindow(QMainWindow, Ui_SHA256):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
