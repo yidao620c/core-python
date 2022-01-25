@@ -14,9 +14,6 @@ class MainWindow(QMainWindow, Ui_SHA256):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
         self.post_setupUi()
-        # 定义button的槽函数
-        self.pushButton.clicked.connect(self.open_dir)
-        self.pushButton_2.clicked.connect(self.btn_action)
 
     def post_setupUi(self):
         """designer设计之后的自定义UI设计"""
@@ -26,16 +23,19 @@ class MainWindow(QMainWindow, Ui_SHA256):
         self.statusLabel.setText("  准备")
         # 定义水平进度条
         self.progressBar = QProgressBar()
-        # 设置进度条的范围，参数1为最小值，参数2为最大值（可以调得更大，比如1000
+        # 设置进度条的范围，参数1为最小值，参数2为最大值（可以调得更大，比如1000）
         self.progressBar.setRange(0, 100)
         # 设置进度条的初始值
         self.progressBar.setValue(0)
         # 往状态栏中添加组件（stretch是拉伸组件宽度）
         self.statusBar.addPermanentWidget(self.statusLabel, stretch=2)
         self.statusBar.addPermanentWidget(self.progressBar, stretch=20)
+        # 定义button的槽函数
+        self.pushButton.clicked.connect(self.open_dir)
+        self.pushButton_2.clicked.connect(self.btn_action)
 
     def open_dir(self):
-        file_path = QFileDialog.getExistingDirectory(self, "选取指定文件夹", "C:/")
+        file_path = QFileDialog.getExistingDirectory(self, "选取指定文件夹")
         if file_path:
             self.lineEdit.setText(file_path)
 
@@ -70,12 +70,15 @@ class MainWindow(QMainWindow, Ui_SHA256):
         # self.pushButton_2.setEnabled(False)
         self.pushButton_2.setText("取消")
         self.statusLabel.setText(" 执行中")
+        self.progressBar.setValue(0)
         self.plainTextEdit.clear()
         self.plainTextEdit.appendPlainText(f">>>>>all start<<<<<")
 
     def display(self, params):
         # 由于自定义信号时自动传递一个参数对象
         self.plainTextEdit.appendPlainText(f"{params['prefix']}:{params['line']}")
+        if "progress" in params:
+            self.progressBar.setValue(params['progress'])
 
     def warn(self):
         # 显示警告
@@ -108,7 +111,9 @@ class WorkThread(QThread):
         if not os.path.isdir(self.choose_dir):
             self.warn_signal.emit()
             return
-        for i, file in enumerate(os.listdir(self.choose_dir)):
+        all_files = list(filter(lambda f: f.endswith('.json'), os.listdir(self.choose_dir)))
+        count = 0
+        for i, file in enumerate(all_files):
             if not self._is_running:
                 break
             if file.endswith(".json"):
@@ -121,7 +126,9 @@ class WorkThread(QThread):
                     chk_value = hashlib.sha256(bs).hexdigest()
                 with open(os.path.join(self.choose_dir, chk_file_name), 'w') as f:
                     f.write(chk_value)
-                self.trigger.emit({"prefix": "end", "line": f"{file}"})
+                count += 1
+                self.trigger.emit(
+                    {"prefix": "end", "line": f"{file}", "progress": count * 100 / len(all_files)})
 
     def stop(self):
         self._is_running = False
