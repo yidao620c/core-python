@@ -3,7 +3,7 @@ import os
 import hashlib
 import time
 import cgitb
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal, QBasicTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QInputDialog, QFileDialog, \
     QLabel, QProgressBar
 from .sha256_ui import *
@@ -27,12 +27,25 @@ class MainWindow(QMainWindow, Ui_SHA256):
         self.progressBar.setRange(0, 100)
         # 设置进度条的初始值
         self.progressBar.setValue(0)
+        # 设置定时器（走进度条的时候需要使用，否则进度条不会变化，而是固定不变）
+        self.timer = QBasicTimer()
+        self.step = 0
         # 往状态栏中添加组件（stretch是拉伸组件宽度）
         self.statusBar.addPermanentWidget(self.statusLabel, stretch=2)
         self.statusBar.addPermanentWidget(self.progressBar, stretch=20)
         # 定义button的槽函数
         self.pushButton.clicked.connect(self.open_dir)
         self.pushButton_2.clicked.connect(self.btn_action)
+
+    # 每一个QObject对象或其子对象都有一个QObject.timerEvent方法。
+    # 为了响应定时器的超时事件，需要重写进度条的timerEvent方法。
+    def timerEvent(self, event):
+        # 累计步数
+        self.step = max(self.progressBar.value(), self.step) + 1
+        if self.step >= 100:
+            self.step = 0
+        # 修改进度条的值
+        self.progressBar.setValue(self.step)
 
     def open_dir(self):
         file_path = QFileDialog.getExistingDirectory(self, "选取指定文件夹")
@@ -64,6 +77,7 @@ class MainWindow(QMainWindow, Ui_SHA256):
             if QMessageBox.Yes == QMessageBox.question(
                     self, "确认对话框", "你确定要取消吗？", QMessageBox.Yes | QMessageBox.No):
                 self.work.stop()
+                self.timer.stop()
 
     def start(self):
         # 线程开始的处理
@@ -71,6 +85,9 @@ class MainWindow(QMainWindow, Ui_SHA256):
         self.pushButton_2.setText("取消")
         self.statusLabel.setText(" 执行中")
         self.progressBar.setValue(0)
+        # 使用定时器的start()方法启动定时器，激活进度条。其中：
+        # 参数1：超时时间；参数2：到了超时时间后，接收定时器触发超时事件的对象。
+        self.timer.start(500, self)
         self.plainTextEdit.clear()
         self.plainTextEdit.appendPlainText(f">>>>>all start<<<<<")
 
@@ -78,7 +95,7 @@ class MainWindow(QMainWindow, Ui_SHA256):
         # 由于自定义信号时自动传递一个参数对象
         self.plainTextEdit.appendPlainText(f"{params['prefix']}:{params['line']}")
         if "progress" in params:
-            self.progressBar.setValue(params['progress'])
+            self.progressBar.setValue(max(params['progress'], self.progressBar.value()))
 
     def warn(self):
         # 显示警告
@@ -90,6 +107,7 @@ class MainWindow(QMainWindow, Ui_SHA256):
         self.statusLabel.setText(" 准备")
         self.pushButton_2.setText("开始")
         self.progressBar.setValue(0)
+        self.timer.stop()
         # self.pushButton_2.setEnabled(True)
 
 
@@ -119,7 +137,7 @@ class WorkThread(QThread):
                 break
             if file.endswith(".json"):
                 self.trigger.emit({"prefix": "start", "line": f"{file}"})
-                time.sleep(3)
+                time.sleep(2)
                 file_name, ext = os.path.splitext(file)
                 chk_file_name = f"{file_name}.chk"
                 with open(os.path.join(self.choose_dir, file), "rb") as f:
