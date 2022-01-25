@@ -87,8 +87,9 @@ class MainWindow(QMainWindow, Ui_SHA256):
     def end(self):
         # 线程结束的处理
         self.plainTextEdit.appendPlainText(f">>>>>all finished<<<<<<")
-        self.statusLabel.setText("  完成")
+        self.statusLabel.setText(" 准备")
         self.pushButton_2.setText("开始")
+        self.progressBar.setValue(0)
         # self.pushButton_2.setEnabled(True)
 
 
