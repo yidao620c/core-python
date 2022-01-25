@@ -4,7 +4,8 @@ import hashlib
 import time
 import cgitb
 from PyQt5.QtCore import QThread, pyqtSignal
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QInputDialog, QFileDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QInputDialog, QFileDialog, \
+    QLabel, QProgressBar
 from .sha256_ui import *
 
 
@@ -12,14 +13,37 @@ class MainWindow(QMainWindow, Ui_SHA256):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
+        self.post_setupUi()
         # 定义button的槽函数
         self.pushButton.clicked.connect(self.open_dir)
-        self.pushButton_2.clicked.connect(self.execute)
+        self.pushButton_2.clicked.connect(self.btn_action)
+
+    def post_setupUi(self):
+        """designer设计之后的自定义UI设计"""
+        # 定义文本标签
+        self.statusLabel = QLabel()
+        # 设置文本标签显示内容
+        self.statusLabel.setText("  准备")
+        # 定义水平进度条
+        self.progressBar = QProgressBar()
+        # 设置进度条的范围，参数1为最小值，参数2为最大值（可以调得更大，比如1000
+        self.progressBar.setRange(0, 100)
+        # 设置进度条的初始值
+        self.progressBar.setValue(0)
+        # 往状态栏中添加组件（stretch是拉伸组件宽度）
+        self.statusBar.addPermanentWidget(self.statusLabel, stretch=2)
+        self.statusBar.addPermanentWidget(self.progressBar, stretch=20)
 
     def open_dir(self):
         file_path = QFileDialog.getExistingDirectory(self, "选取指定文件夹", "C:/")
         if file_path:
             self.lineEdit.setText(file_path)
+
+    def btn_action(self):
+        if self.pushButton_2.text() == "开始":
+            self.execute()
+        else:
+            self.cancel()
 
     def execute(self):
         if self.lineEdit.text():
@@ -35,8 +59,17 @@ class MainWindow(QMainWindow, Ui_SHA256):
         else:
             QMessageBox.warning(self, "警告对话框", "请先选择文件夹")
 
+    def cancel(self):
+        if self.work:
+            if QMessageBox.Yes == QMessageBox.question(
+                    self, "确认对话框", "你确定要取消吗？", QMessageBox.Yes | QMessageBox.No):
+                self.work.stop()
+
     def start(self):
         # 线程开始的处理
+        # self.pushButton_2.setEnabled(False)
+        self.pushButton_2.setText("取消")
+        self.statusLabel.setText(" 执行中")
         self.plainTextEdit.clear()
         self.plainTextEdit.appendPlainText(f">>>>>all start<<<<<")
 
@@ -51,6 +84,9 @@ class MainWindow(QMainWindow, Ui_SHA256):
     def end(self):
         # 线程结束的处理
         self.plainTextEdit.appendPlainText(f">>>>>all finished<<<<<<")
+        self.statusLabel.setText("  完成")
+        self.pushButton_2.setText("开始")
+        # self.pushButton_2.setEnabled(True)
 
 
 class WorkThread(QThread):
@@ -58,11 +94,14 @@ class WorkThread(QThread):
     warn_signal = pyqtSignal()
     # 自定义信号对象，参数dict就代表这个信号可以传一个dict对象
     trigger = pyqtSignal(dict)
+    # 自定义开始和结束信号
+    start_signal = pyqtSignal(bool)
 
     def __init__(self, choose_dir: str = None):
         # 初始化函数
         super().__init__()
         self.choose_dir = choose_dir
+        self._is_running = True
 
     def run(self):
         # 重写线程执行的run函数，触发自定义信号
@@ -70,9 +109,11 @@ class WorkThread(QThread):
             self.warn_signal.emit()
             return
         for i, file in enumerate(os.listdir(self.choose_dir)):
+            if not self._is_running:
+                break
             if file.endswith(".json"):
                 self.trigger.emit({"prefix": "start", "line": f"{file}"})
-                # time.sleep(1)
+                time.sleep(3)
                 file_name, ext = os.path.splitext(file)
                 chk_file_name = f"{file_name}.chk"
                 with open(os.path.join(self.choose_dir, file), "rb") as f:
@@ -81,6 +122,9 @@ class WorkThread(QThread):
                 with open(os.path.join(self.choose_dir, chk_file_name), 'w') as f:
                     f.write(chk_value)
                 self.trigger.emit({"prefix": "end", "line": f"{file}"})
+
+    def stop(self):
+        self._is_running = False
 
 
 def main():
