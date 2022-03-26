@@ -6,7 +6,7 @@ Topic: 注册虚拟子类
 
 from random import randrange
 
-from ch11inherit.my_abc_class import Tombola
+from ch07object.my_abc_class import Tombola
 
 
 class TomboList(list):

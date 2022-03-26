@@ -23,6 +23,6 @@ class Phone(object):
         self.__color = color
 
 phone = Phone('Huawei', 'P30', '174.00g', '幻影蓝')
-print(phone.__color)
+# print(phone.__color)  # cannot access
 phone.print_color()
 
