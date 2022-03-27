@@ -6,9 +6,15 @@
 
 
 class Count:
+    def __new__(cls, *args, **kwargs):
+        print('Count.__new__')
+        return super().__new__(cls)
+
     def __init__(self, func):
+        print("__init__ Count")
         self.func = func
         self.num_calls = 0
+
 
     def __call__(self, *args, **kwargs):
         self.num_calls += 1

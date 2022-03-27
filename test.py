@@ -28,3 +28,7 @@ if __name__ == '__main__':
     print(isinstance(swap, Callable))
     print(isinstance(son.choose, Callable))
     print(callable(son.choose))
+
+    print(type(son))
+    print(type(Son))
+    print(type(type))
